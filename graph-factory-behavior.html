@@ -1,0 +1,11 @@
+<script>
+  var DygraphBehaviors = DygraphBehaviors || {};
+  /** @polymerBehavior */
+  DygraphBehaviors.GraphFactoryBehavior = {
+
+    ready: function() {
+      this.async(this.createGraph, null, 0);
+    }
+
+  };
+</script>

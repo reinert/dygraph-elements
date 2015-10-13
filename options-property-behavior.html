@@ -1,0 +1,22 @@
+<script>
+  var DygraphBehaviors = DygraphBehaviors || {};
+  /** @polymerBehavior */
+  DygraphBehaviors.OptionsPropertyBehavior = {
+
+    properties: {
+
+      options: {
+        type: Object,
+        value: function () {
+          return {};
+        }
+      }
+
+    },
+
+    observers: [
+      'updateOptions(options.*)'
+    ]
+
+  };
+</script>

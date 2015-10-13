@@ -1,0 +1,128 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="dygraph-combined-import.html">
+<link rel="import" href="dygraph-shapes-import.html">
+<link rel="import" href="graph-factory-behavior.html">
+<link rel="import" href="graph-property-behavior.html">
+<link rel="import" href="options-property-behavior.html">
+<link rel="import" href="data-property-behavior.html">
+<link rel="import" href="scatter-properties-behavior.html">
+
+<!--
+A scatter graph is a way of viewing points in a plot.
+
+Often, it is used to compare two variables in different data sets.
+
+##### Example
+
+    <dygraph-scatter data="[[data]]"
+                     label="Label"
+                     x="January" x-gap="0.1"
+                     y="February" y-gap="0.1">
+    </dygraph-scatter>
+
+    ...
+
+    this.data = [
+      {"Label": 1, "January": 65, "February": 40},
+      {"Label": 2, "January": 30, "February": 20},
+      {"Label": 3, "January": 50, "February": 30},
+      {"Label": 4, "January": 85, "February": 70}
+    ];
+
+@group Dygraph Elements
+@element dygraph-scatter
+@demo demo/dygraph-scatter.html
+-->
+
+<link rel="import" href="graph-styles.html">
+<dom-module id="dygraph-scatter">
+
+  <template>
+
+    <style include="graph-styles"></style>
+
+    <div id="frame"></div>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'dygraph-scatter',
+
+      behaviors: [
+        DygraphBehaviors.GraphFactoryBehavior,
+        DygraphBehaviors.GraphPropertyBehavior,
+        DygraphBehaviors.OptionsPropertyBehavior,
+        DygraphBehaviors.DataPropertyBehavior,
+        DygraphBehaviors.ScatterPropertiesBehavior
+      ],
+
+      createGraph: function() {
+        var sortedData = this.data.slice(0), length = this.data.length,
+            x = this.x, yMin = Number.MAX_VALUE, yMax = Number.MIN_VALUE;
+
+        this._rawData = [];
+
+        // sort by 'x' so the graph is properly displayed
+        sortedData.sort(function(a, b){ return a[x] - b[x] });
+
+        // parse labels
+        this.rowByLabel = {};
+        if (this.options) {
+          this.options.labels = sortedData.map(function(d, i) {
+            this.rowByLabel[d[this.label]] = i;
+            return d[this.label];
+          }, this);
+        } else {
+          this.options = { labels: sortedData.map(function(d, i) {
+            this.rowByLabel[d[this.label]] = i;
+            return d[this.label];
+          }, this) };
+        }
+        this.options.labels.unshift(x);
+
+        // parse data
+        for (var i = 0; i < length; i++) {
+          var item = {
+            "0": sortedData[i][this.x],
+            "length": length + 1
+          };
+
+          var yValue = sortedData[i][this.y];
+
+          item[i+1] = yValue;
+
+          // yMin and yMax record
+          yMin = yValue < yMin ? yValue : yMin;
+          yMax = yValue > yMax ? yValue : yMax;
+
+          this._rawData.push(item);
+        }
+
+        // set x axis range
+        if (this['xGap']) {
+          var xMax = this._rawData[this._rawData.length - 1][0],
+              xMin = this._rawData[0][0];
+          var xGap = (xMax - xMin) * this['xGap'];
+          this.options.dateWindow = [xMin - xGap, xMax + xGap];
+        }
+
+        // set y range
+        if (this['yGap']) {
+          var yGap = (yMax - yMin) * this['yGap'];
+          this.options.valueRange = [yMin - yGap, yMax + yGap];
+        }
+
+        this.graph = new Dygraph(this.$.frame, this._rawData, this.options);
+      },
+
+      updateOptions: function() {
+        if (this.graph) {
+          this.graph.updateOptions(this.options);
+        }
+      }
+
+    });
+  </script>
+</dom-module>
