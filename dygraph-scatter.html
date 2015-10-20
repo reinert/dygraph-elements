@@ -58,66 +58,71 @@ Often, it is used to compare two variables in different data sets.
         DygraphBehaviors.ScatterPropertiesBehavior
       ],
 
-      createGraph: function() {
-        var sortedData = this.data.slice(0), length = this.data.length,
-            x = this.x, yMin = Number.MAX_VALUE, yMax = Number.MIN_VALUE;
+      _createGraph: function() {
+        if (this._isDataAvailable()) {
+          var sortedData = this.data.slice(0), length = this.data.length,
+              x = this.x, yMin = Number.MAX_VALUE, yMax = Number.MIN_VALUE;
 
-        this._rawData = [];
+          this._rawData = [];
 
-        // sort by 'x' so the graph is properly displayed
-        sortedData.sort(function(a, b){ return a[x] - b[x] });
+          // sort by 'x' so the graph is properly displayed
+          sortedData.sort(function(a, b){ return a[x] - b[x] });
 
-        // parse labels
-        this.rowByLabel = {};
-        if (this.options) {
-          this.options.labels = sortedData.map(function(d, i) {
-            this.rowByLabel[d[this.label]] = i;
-            return d[this.label];
-          }, this);
+          // parse labels
+          this.rowByLabel = {};
+          if (this.options) {
+            this.options.labels = sortedData.map(function(d, i) {
+              this.rowByLabel[d[this.label]] = i;
+              return d[this.label];
+            }, this);
+          } else {
+            this.options = { labels: sortedData.map(function(d, i) {
+              this.rowByLabel[d[this.label]] = i;
+              return d[this.label];
+            }, this) };
+          }
+          this.options.labels.unshift(x);
+
+          // parse data
+          for (var i = 0; i < length; i++) {
+            var item = {
+              "0": sortedData[i][this.x],
+              "length": length + 1
+            };
+
+            var yValue = sortedData[i][this.y];
+
+            item[i+1] = yValue;
+
+            // yMin and yMax record
+            yMin = yValue < yMin ? yValue : yMin;
+            yMax = yValue > yMax ? yValue : yMax;
+
+            this._rawData.push(item);
+          }
+
+          // set x axis range
+          if (this['xGap']) {
+            var xMax = this._rawData[this._rawData.length - 1][0],
+                xMin = this._rawData[0][0];
+            var xGap = (xMax - xMin) * this['xGap'];
+            this.options.dateWindow = [xMin - xGap, xMax + xGap];
+          }
+
+          // set y range
+          if (this['yGap']) {
+            var yGap = (yMax - yMin) * this['yGap'];
+            this.options.valueRange = [yMin - yGap, yMax + yGap];
+          }
+
+          this.graph = new Dygraph(this.$.frame, this._rawData, this.options);
         } else {
-          this.options = { labels: sortedData.map(function(d, i) {
-            this.rowByLabel[d[this.label]] = i;
-            return d[this.label];
-          }, this) };
+          this._rawData = [];
+          this.graph = null;
         }
-        this.options.labels.unshift(x);
-
-        // parse data
-        for (var i = 0; i < length; i++) {
-          var item = {
-            "0": sortedData[i][this.x],
-            "length": length + 1
-          };
-
-          var yValue = sortedData[i][this.y];
-
-          item[i+1] = yValue;
-
-          // yMin and yMax record
-          yMin = yValue < yMin ? yValue : yMin;
-          yMax = yValue > yMax ? yValue : yMax;
-
-          this._rawData.push(item);
-        }
-
-        // set x axis range
-        if (this['xGap']) {
-          var xMax = this._rawData[this._rawData.length - 1][0],
-              xMin = this._rawData[0][0];
-          var xGap = (xMax - xMin) * this['xGap'];
-          this.options.dateWindow = [xMin - xGap, xMax + xGap];
-        }
-
-        // set y range
-        if (this['yGap']) {
-          var yGap = (yMax - yMin) * this['yGap'];
-          this.options.valueRange = [yMin - yGap, yMax + yGap];
-        }
-
-        this.graph = new Dygraph(this.$.frame, this._rawData, this.options);
       },
 
-      updateOptions: function() {
+      _updateOptions: function() {
         if (this.graph) {
           this.graph.updateOptions(this.options);
         }

@@ -51,19 +51,25 @@ Often, it is used to show trend data, and the comparison of two data sets.
         DygraphBehaviors.DataPropertyBehavior
       ],
 
-      createGraph: function() {
-        this._rawData = this.data.slice(1);
+      _createGraph: function() {
+        if (this._isDataAvailable()) {
+          this._rawData = this.data.slice(1);
 
-        if (this.options) {
-          this.options.labels = this.data.slice(0, 1)[0];
+          if (this.options) {
+            this.options.labels = this.data.slice(0, 1)[0];
+          } else {
+            this.options = { labels: this.data.slice(0, 1)[0] };
+          }   
+
+          this.graph = new Dygraph(this.$.frame, this._rawData, this.options);
         } else {
-          this.options = { labels: this.data.slice(0, 1)[0] };
-        }   
-
-        this.graph = new Dygraph(this.$.frame, this._rawData, this.options);
+          this._rawData = [];
+          this.graph = null;
+        }
+        
       },
 
-      updateOptions: function() {
+      _updateOptions: function() {
         if (this.graph) {
           this.graph.updateOptions(this.options);
         }
