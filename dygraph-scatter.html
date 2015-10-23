@@ -42,8 +42,6 @@ Often, it is used to compare two variables in different data sets.
 
     <style include="graph-styles"></style>
 
-    <div id="container"></div>
-
   </template>
 
   <script>
@@ -62,6 +60,7 @@ Often, it is used to compare two variables in different data sets.
 
       _createGraph: function() {
         this._applyContainerStyle();
+        
         if (this._isDataAvailable()) {
           var sortedData = this.data.slice(0), length = this.data.length,
               x = this.x, yMin = Number.MAX_VALUE, yMax = Number.MIN_VALUE;
@@ -118,7 +117,7 @@ Often, it is used to compare two variables in different data sets.
             this.options.valueRange = [yMin - yGap, yMax + yGap];
           }
 
-          this.graph = new Dygraph(this.$.container, this._rawData, this.options);
+          this.graph = new Dygraph(this, this._rawData, this.options);
         } else {
           this._rawData = [];
           this.graph = null;

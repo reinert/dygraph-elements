@@ -36,8 +36,6 @@ Often, it is used to show trend data, and the comparison of two data sets.
 
     <style include="graph-styles"></style>
 
-    <div id="container"></div>
-
   </template>
 
   <script>
@@ -55,6 +53,7 @@ Often, it is used to show trend data, and the comparison of two data sets.
 
       _createGraph: function() {
         this._applyContainerStyle();
+
         if (this._isDataAvailable()) {
           this._rawData = this.data.slice(1);
 
@@ -64,12 +63,11 @@ Often, it is used to show trend data, and the comparison of two data sets.
             this.options = { labels: this.data.slice(0, 1)[0] };
           }   
 
-          this.graph = new Dygraph(this.$.container, this._rawData, this.options);
+          this.graph = new Dygraph(this, this._rawData, this.options);
         } else {
           this._rawData = [];
           this.graph = null;
         }
-        
       },
 
       _updateOptions: function() {
