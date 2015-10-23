@@ -1,6 +1,6 @@
 {
   "name": "dygraph-elements",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "authors": [
     "Danilo Reinert <daniloreinert@gmail.com>"
   ],
@@ -8,8 +8,9 @@
   "keywords": [
     "web-component",
     "polymer",
+    "dygraphs",
     "dygraph",
-    "dygraphs"
+    "dygraph-elements"
   ],
   "main": "dygraph-elements.html",
   "license": "http://polymer.github.io/LICENSE.txt",
@@ -19,8 +20,7 @@
     "/test/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.1.0",
-    "dygraphs": "dygraphs#^2.0.0"
+    "polymer": "Polymer/polymer#^1.1.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
