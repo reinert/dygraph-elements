@@ -6,6 +6,7 @@
 <link rel="import" href="options-property-behavior.html">
 <link rel="import" href="data-property-behavior.html">
 <link rel="import" href="scatter-properties-behavior.html">
+<link rel="import" href="container-properties-behavior.html">
 
 <!--
 A scatter graph is a way of viewing points in a plot.
@@ -41,7 +42,7 @@ Often, it is used to compare two variables in different data sets.
 
     <style include="graph-styles"></style>
 
-    <div id="frame"></div>
+    <div id="container"></div>
 
   </template>
 
@@ -55,10 +56,12 @@ Often, it is used to compare two variables in different data sets.
         DygraphBehaviors.GraphPropertyBehavior,
         DygraphBehaviors.OptionsPropertyBehavior,
         DygraphBehaviors.DataPropertyBehavior,
+        DygraphBehaviors.ContainerPropertiesBehavior,
         DygraphBehaviors.ScatterPropertiesBehavior
       ],
 
       _createGraph: function() {
+        this._applyContainerStyle();
         if (this._isDataAvailable()) {
           var sortedData = this.data.slice(0), length = this.data.length,
               x = this.x, yMin = Number.MAX_VALUE, yMax = Number.MIN_VALUE;
@@ -115,7 +118,7 @@ Often, it is used to compare two variables in different data sets.
             this.options.valueRange = [yMin - yGap, yMax + yGap];
           }
 
-          this.graph = new Dygraph(this.$.frame, this._rawData, this.options);
+          this.graph = new Dygraph(this.$.container, this._rawData, this.options);
         } else {
           this._rawData = [];
           this.graph = null;

@@ -17,7 +17,7 @@
 
       <p>Change data: <button on-tap="changeData">change data</button></p>
 
-      <dygraph-line data="[[data]]" options="{{options}}"></dygraph-line>
+      <dygraph-line data="[[data]]" options="[[options]]" width="98%" height="500px"></dygraph-line>
       
     </template>
 
@@ -26,13 +26,13 @@
 
       scope.options = {};
 
-      // scope.data = [
-      //   ["x", "A", "B"],
-      //   [1,   10,  100],
-      //   [2,   20,  80],
-      //   [3,   50,  60],
-      //   [4,   70,  80]
-      // ];
+      scope.data = [
+        ["x", "A", "B"],
+        [1,   10,  100],
+        [2,   20,  80],
+        [3,   50,  60],
+        [4,   70,  80]
+      ];
 
       scope.applyLogscale = function() {
         this.set('options.logscale', true);
