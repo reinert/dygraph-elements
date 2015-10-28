@@ -61,7 +61,7 @@ Often, it is used to compare two variables in different data sets.
       _createGraph: function() {
         this._applyContainerStyle();
         
-        if (this._isDataAvailable()) {
+        if (this._isDataAvailable() && this._isVarsAvailable()) {
           var sortedData = this.data.slice(0), length = this.data.length,
               x = this.x, yMin = Number.MAX_VALUE, yMax = Number.MIN_VALUE;
 
