@@ -13,6 +13,10 @@
 
     },
 
+    observers: [
+      '_createGraph(data.*, x, y)'
+    ],
+
     _isVarsAvailable: function() {
       return this.x != null && this.y != null;
     }
