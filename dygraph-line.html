@@ -55,13 +55,15 @@ Often, it is used to show trend data, and the comparison of two data sets.
         this._applyContainerStyle();
 
         if (this._isDataAvailable()) {
-          this._rawData = this.data.slice(1);
+          this._rawData = this.data.slice(this.noHeader ? 0 : 1);
 
-          if (this.options) {
-            this.options.labels = this.data.slice(0, 1)[0];
+          if (this.noHeader) {
+            if (this.labels) {
+              this.options.labels = this.labels.slice();
+            }
           } else {
-            this.options = { labels: this.data.slice(0, 1)[0] };
-          }   
+            this.options.labels = this.data.slice(0, 1)[0];
+          }
 
           this.graph = new Dygraph(this, this._rawData, this.options);
         } else {

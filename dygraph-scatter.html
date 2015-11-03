@@ -62,27 +62,26 @@ Often, it is used to compare two variables in different data sets.
         this._applyContainerStyle();
         
         if (this._isDataAvailable() && this._isVarsAvailable()) {
-          var sortedData = this.data.slice(0), length = this.data.length,
+          var sortedData = this.data.slice(this.noHeader ? 0 : 1), length = this.data.length,
               x = this.x, yMin = Number.MAX_VALUE, yMax = Number.MIN_VALUE;
 
           this._rawData = [];
 
           // sort by 'x' so the graph is properly displayed
-          sortedData.sort(function(a, b){ return a[x] - b[x] });
+          sortedData.sort(function(a, b){ return a[x] - b[x]; });
 
           // parse labels
           this.rowByLabel = {};
-          if (this.options) {
+
+          if (this.labels) {
+            this.options.labels = this.labels.slice();
+          } else {
             this.options.labels = sortedData.map(function(d, i) {
               this.rowByLabel[d[this.label]] = i;
               return d[this.label];
             }, this);
-          } else {
-            this.options = { labels: sortedData.map(function(d, i) {
-              this.rowByLabel[d[this.label]] = i;
-              return d[this.label];
-            }, this) };
           }
+
           this.options.labels.unshift(x);
 
           // parse data
