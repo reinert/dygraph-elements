@@ -62,8 +62,11 @@ Often, it is used to compare two variables in different data sets.
         this._applyContainerStyle();
         
         if (this._isDataAvailable() && this._isVarsAvailable()) {
-          var sortedData = this.data.slice(this.noHeader ? 0 : 1), length = this.data.length,
-              x = this.x, yMin = Number.MAX_VALUE, yMax = Number.MIN_VALUE;
+          var sortedData = this.data.slice(this.noHeader ? 0 : 1),
+              length = sortedData.length,
+              x = this.x,
+              yMin = Number.MAX_VALUE,
+              yMax = Number.MIN_VALUE;
 
           this._rawData = [];
 
