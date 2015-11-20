@@ -15,19 +15,34 @@ Often, it is used to compare two variables in different data sets.
 
 ##### Example
 
-    <dygraph-scatter data="[[data]]"
+    <dygraph-scatter data="[[jsonData]]"
+                     no-header
                      label="Label"
-                     x="January" x-gap="0.1"
-                     y="February" y-gap="0.1">
+                     x="January"
+                     y="February">
+    </dygraph-scatter>
+
+    <dygraph-scatter data="[[arrayData]]"
+                     no-header
+                     label="0"
+                     x="1"
+                     y="2">
     </dygraph-scatter>
 
     ...
 
-    this.data = [
+    this.jsonData = [
       {"Label": 1, "January": 65, "February": 40},
       {"Label": 2, "January": 30, "February": 20},
       {"Label": 3, "January": 50, "February": 30},
       {"Label": 4, "January": 85, "February": 70}
+    ];
+
+    this.arrayData = [
+      [1, 65, 40],
+      [2, 30, 20],
+      [3, 50, 30],
+      [4, 85, 70]
     ];
 
 @group Dygraph Elements

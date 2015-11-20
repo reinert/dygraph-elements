@@ -1,61 +1,61 @@
 # dygraph-elements
 
-An element providing a starting point for your own reusable Polymer elements.
+A set of performant graph elements powered by [dygraphs](https://github.com/danvk/dygraphs).
 
 
-## Dependencies
+## Install
 
-Element dependencies are managed via [Bower](http://bower.io/). You can
-install that via:
-
-    npm install -g bower
-
-Then, go ahead and download the element's dependencies:
-
-    bower install
+```sh
+$ bower install dygraph-elements --save
+```
 
 
-## Playing With Your Element
+## Examples
 
-If you wish to work on your element in isolation, we recommend that you use
-[Polyserve](https://github.com/PolymerLabs/polyserve) to keep your element's
-bower dependencies in line. You can install it via:
+#### Time Series
 
-    npm install -g polyserve
+```html
+<dygraph-line data="[[data]]"></dygraph-line>
 
-And you can run it via:
+<script>
+  scope.data = [
+    ["x", "January", "February", "March", "April", "May", "June", "July"],
+    [1, 65, 59, 80, 81, 56, 55, 40],
+    [2, 28, 48, 40, 19, 86, 27, 90]
+  ];
+</script>
+```
 
-    polyserve
+#### Cross Plot
 
-Once running, you can preview your element at
-`http://localhost:8080/components/dygraph-elements/`, where `dygraph-elements` is the name of the directory containing it.
+```html
+<dygraph-scatter data="[[data]]"
+                 no-header
+                 label="Label"
+                 x="January"
+                 y="February">
+</dygraph-scatter>
 
+<script>
+  scope.data = [
+    {"Label": 1, "January": 65, "February": 40},
+    {"Label": 2, "January": 30, "February": 20},
+    {"Label": 3, "January": 50, "February": 30},
+    {"Label": 4, "January": 85, "February": 70}
+  ];
+</script>
+```
 
-## Testing Your Element
+## Documentation
 
-Simply navigate to the `/test` directory of your element to run its tests. If
-you are using Polyserve: `http://localhost:8080/components/dygraph-elements/test/`
-
-### web-component-tester
-
-The tests are compatible with [web-component-tester](https://github.com/Polymer/web-component-tester).
-Install it via:
-
-    npm install -g web-component-tester
-
-Then, you can run your tests on _all_ of your local browsers via:
-
-    wct
-
-#### WCT Tips
-
-`wct -l chrome` will only run tests in chrome.
-
-`wct -p` will keep the browsers alive after test runs (refresh to re-run).
-
-`wct test/some-file.html` will test only the files you specify.
+See the [component page](http://reinert.github.io/dygraph-elements).
 
 
-## Yeoman support
+## Demo
+* [&lt;dygraph-line&gt;](http://reinert.github.io/dygraph-elements/demo/dygraph-line.html)
+* [&lt;dygraph-scatter&gt;](http://reinert.github.io/dygraph-elements/demo/dygraph-scatter.html)
 
-If you'd like to use Yeoman to scaffold your element that's possible. The official [`generator-polymer`](https://github.com/yeoman/generator-polymer) generator has a [`seed`](https://github.com/yeoman/generator-polymer#seed) subgenerator.
+
+## License
+
+MIT
