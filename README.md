@@ -52,8 +52,8 @@ See the [component page](http://reinert.github.io/dygraph-elements).
 
 
 ## Demo
-* [&lt;dygraph-line&gt;](http://reinert.github.io/dygraph-elements/demo/dygraph-line.html)
-* [&lt;dygraph-scatter&gt;](http://reinert.github.io/dygraph-elements/demo/dygraph-scatter.html)
+* [&lt;dygraph-line&gt;](http://reinert.github.io/dygraph-elements/components/dygraph-elements/demo/dygraph-line.html)
+* [&lt;dygraph-scatter&gt;](http://reinert.github.io/dygraph-elements/components/dygraph-elements/demo/dygraph-scatter.html)
 
 
 ## License
