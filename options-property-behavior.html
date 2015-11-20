@@ -33,6 +33,9 @@
         this.options.unhighlightCallback = function(e) {
           self._fireUnhighlight(e, this);
         };
+        this.options.pointClickCallback = function(e, point) {
+          self._firePointClick(e, point);
+        };
       } else {
         console.warn('Unsuccesfull setup of options. The property is null.');
       }
@@ -44,6 +47,10 @@
 
     _fireUnhighlight: function(e, graph) {
       this.fire('unhighlight', {event: e, graph: graph});
+    },
+
+    _firePointClick: function(e, point) {
+      this.fire('point-click', {event: e, point: point});
     }
 
   };
