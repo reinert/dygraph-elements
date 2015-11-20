@@ -20,7 +20,8 @@
                        on-highlight="highlight"
                        on-unhighlight="unhighlight"
                        on-point-click="pointClick"
-                       on-graph-click="graphClick">
+                       on-graph-click="graphClick"
+                       on-zoom="zoom">
       </dygraph-scatter>
       
     </template>
@@ -57,6 +58,12 @@
 
       scope.graphClick = function(e, details) {
         console.log('graphClick');
+        console.log(e);
+        console.log(details);
+      };
+
+      scope.zoom = function(e, details) {
+        console.log('zoom');
         console.log(e);
         console.log(details);
       }

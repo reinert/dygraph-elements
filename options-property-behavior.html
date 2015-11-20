@@ -39,6 +39,9 @@
         this.options.clickCallback = function(e, x, points) {
           self._fireGraphClick(e, x, points);
         };
+        this.options.zoomCallback = function(minDate, maxDate, yRanges) {
+          self._fireZoom(minDate, maxDate, yRanges);
+        };
       } else {
         console.warn('Unsuccesfull setup of options. The options property is null.');
       }
@@ -58,6 +61,10 @@
 
     _fireGraphClick: function(e, x, points) {
       this.fire('graph-click', {event: e, x: x, points: points});
+    },
+
+    _fireZoom: function(minDate, maxDate, yRanges) {
+      this.fire('zoom', {minDate: minDate, maxDate: maxDate, yRanges: yRanges});
     }
 
   };
