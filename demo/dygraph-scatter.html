@@ -18,7 +18,9 @@
                        x="January" x-gap="0.2"
                        y="February" y-gap="0.3"
                        on-highlight="highlight"
-                       on-unhighlight="unhighlight">
+                       on-unhighlight="unhighlight"
+                       on-point-click="pointClick"
+                       on-graph-click="graphClick">
       </dygraph-scatter>
       
     </template>
@@ -42,7 +44,19 @@
       };
 
       scope.unhighlight = function(e, details) {
-        console.log('unhightlight');
+        console.log('unhighlight');
+        console.log(e);
+        console.log(details);
+      };
+
+      scope.pointClick = function(e, details) {
+        console.log('pointClick');
+        console.log(e);
+        console.log(details);
+      };
+
+      scope.graphClick = function(e, details) {
+        console.log('graphClick');
         console.log(e);
         console.log(details);
       }

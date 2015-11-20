@@ -36,8 +36,11 @@
         this.options.pointClickCallback = function(e, point) {
           self._firePointClick(e, point);
         };
+        this.options.clickCallback = function(e, x, points) {
+          self._fireGraphClick(e, x, points);
+        };
       } else {
-        console.warn('Unsuccesfull setup of options. The property is null.');
+        console.warn('Unsuccesfull setup of options. The options property is null.');
       }
     },
 
@@ -51,6 +54,10 @@
 
     _firePointClick: function(e, point) {
       this.fire('point-click', {event: e, point: point});
+    },
+
+    _fireGraphClick: function(e, x, points) {
+      this.fire('graph-click', {event: e, x: x, points: points});
     }
 
   };
