@@ -1,0 +1,80 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="dygraph-combined-import.html">
+<link rel="import" href="dygraph-shapes-import.html">
+<link rel="import" href="graph-factory-behavior.html">
+<link rel="import" href="graph-property-behavior.html">
+<link rel="import" href="options-property-behavior.html">
+<link rel="import" href="data-property-behavior.html">
+<link rel="import" href="container-properties-behavior.html">
+
+<!--
+A line chart is a way of plotting data points on a line.
+
+Often, it is used to show trend data, and the comparison of two data sets.
+
+##### Example
+
+    <dygraph-line data="[[data]]"></dygraph-line>
+
+    ...
+
+    this.data = [
+      ["x", "January", "February", "March", "April", "May", "June", "July"],
+      [1, 65, 59, 80, 81, 56, 55, 40],
+      [2, 28, 48, 40, 19, 86, 27, 90]
+    ];
+
+@group Dygraph Elements
+@element dygraph-line
+@demo demo/dygraph-line.html
+-->
+
+<link rel="import" href="graph-styles.html">
+<dom-module id="dygraph-line">
+
+  <template>
+
+    <style include="graph-styles"></style>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'dygraph-line',
+
+      behaviors: [
+        DygraphBehaviors.GraphFactoryBehavior,
+        DygraphBehaviors.GraphPropertyBehavior,
+        DygraphBehaviors.OptionsPropertyBehavior,
+        DygraphBehaviors.DataPropertyBehavior,
+        DygraphBehaviors.ContainerPropertiesBehavior
+      ],
+
+      _createGraph: function() {
+        this._applyContainerStyle();
+
+        if (this._isDataAvailable()) {
+          this._rawData = this.data.slice(this.noHeader ? 0 : 1);
+
+          if (this.noHeader) {
+            if (this.labels) {
+              this.options.labels = this.labels.slice();
+            }
+          } else {
+            this.options.labels = this.data.slice(0, 1)[0];
+          }
+
+          // setup options
+          this._setupOptions();
+
+          this.graph = new Dygraph(this, this._rawData, this.options);
+        } else {
+          this._rawData = [];
+          this.graph = null;
+        }
+      }
+
+    });
+  </script>
+</dom-module>

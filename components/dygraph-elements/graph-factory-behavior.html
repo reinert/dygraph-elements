@@ -1,0 +1,32 @@
+<script>
+  var DygraphBehaviors = DygraphBehaviors || {};
+  /** @polymerBehavior */
+  DygraphBehaviors.GraphFactoryBehavior = {
+
+    properties: {
+
+      "noHeader": {
+        type: Boolean,
+        value: false
+      },
+
+      "labels": Array
+
+    },
+
+    observers: [
+      '_labelsChanged(labels.*)'
+    ],
+
+    ready: function() {
+      this.async(this._createGraph, null, 0);
+    },
+
+    _labelsChanged: function() {
+      if (this.noHeader) {
+        this.options.labels = this.labels.slice();
+      }
+    }
+
+  };
+</script>

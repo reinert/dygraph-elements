@@ -1,0 +1,23 @@
+<script>
+  var DygraphBehaviors = DygraphBehaviors || {};
+  /** @polymerBehavior */
+  DygraphBehaviors.ContainerPropertiesBehavior = {
+
+    properties: {
+
+      height: String,
+      width: String
+
+    },
+
+    _applyContainerStyle: function() {
+      if (this.width) {
+        this.style.width = this.width;
+      }
+      if (this.height) {
+        this.style.height = this.height;
+      }
+    }
+
+  };
+</script>

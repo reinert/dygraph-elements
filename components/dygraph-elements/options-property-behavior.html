@@ -1,0 +1,71 @@
+<script>
+  var DygraphBehaviors = DygraphBehaviors || {};
+  /** @polymerBehavior */
+  DygraphBehaviors.OptionsPropertyBehavior = {
+
+    properties: {
+
+      options: {
+        type: Object,
+        value: function () {
+          return {};
+        }
+      }
+
+    },
+
+    observers: [
+      '_updateOptions(options.*)'
+    ],
+
+    _updateOptions: function() {
+      if (this.graph) {
+        this.graph.updateOptions(this.options);
+      }
+    },
+
+    _setupOptions: function() {
+      if (this.options) {
+        var self = this;
+        this.options.highlightCallback = function(e, x, pts, row, series) {
+          self._fireHighlight(e, x, pts, row, series, this);
+        };
+        this.options.unhighlightCallback = function(e) {
+          self._fireUnhighlight(e, this);
+        };
+        this.options.pointClickCallback = function(e, point) {
+          self._firePointClick(e, point);
+        };
+        this.options.clickCallback = function(e, x, points) {
+          self._fireGraphClick(e, x, points);
+        };
+        this.options.zoomCallback = function(minDate, maxDate, yRanges) {
+          self._fireZoom(minDate, maxDate, yRanges);
+        };
+      } else {
+        console.warn('Unsuccesfull setup of options. The options property is null.');
+      }
+    },
+
+    _fireHighlight: function(e, x, pts, row, series, graph) {
+      this.fire('highlight', {event: e, x: x, points: pts, row: row, series: series, graph: graph});
+    },
+
+    _fireUnhighlight: function(e, graph) {
+      this.fire('unhighlight', {event: e, graph: graph});
+    },
+
+    _firePointClick: function(e, point) {
+      this.fire('point-click', {event: e, point: point});
+    },
+
+    _fireGraphClick: function(e, x, points) {
+      this.fire('graph-click', {event: e, x: x, points: points});
+    },
+
+    _fireZoom: function(minDate, maxDate, yRanges) {
+      this.fire('zoom', {minDate: minDate, maxDate: maxDate, yRanges: yRanges});
+    }
+
+  };
+</script>

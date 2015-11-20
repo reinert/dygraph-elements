@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>dygraph-elements Demo</title>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../dygraph-elements.html">
+  </head>
+  <body unresolved>
+
+    <template is="dom-bind">
+
+      <p>Sample of <code>&lt;dygraph-line&gt;</code></p>
+
+      <p>Change to: <button on-tap="applyLogscale">logscale</button></p>
+
+      <p>Change data: <button on-tap="changeData">change data</button></p>
+
+      <dygraph-line data="[[data]]" options="[[options]]" width="98%" height="500px"></dygraph-line>
+      
+    </template>
+
+    <script>
+      var scope = document.querySelector('template');
+
+      scope.options = {};
+
+      scope.data = [
+        ["x", "A", "B"],
+        [1,   10,  100],
+        [2,   20,  80],
+        [3,   50,  60],
+        [4,   70,  80]
+      ];
+
+      scope.applyLogscale = function() {
+        this.set('options.logscale', true);
+      };
+
+      scope.changeData = function() {
+        this.data = [
+          ["d", "G", "H"],
+          [1,   30,  60],
+          [2,   25,  30],
+          [3,   53,  20],
+          [4,   65,  20]
+        ];
+      };
+    </script>
+
+  </body>
+</html>
