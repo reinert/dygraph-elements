@@ -1,23 +1,29 @@
 {
   "name": "dygraph-elements",
-  "version": "0.1.2",
+  "version": "0.1.10",
   "authors": [
-    "Danilo Reinert <daniloreinert@gmail.com>"
+    "Danilo Reinert <daniloreinert@gmail.com> (http://reinert.io)"
   ],
-  "description": "Graph element set powered by dygraphs.",
+  "description": "A set of performant graph elements powered by dygraphs.",
   "keywords": [
     "web-component",
+    "web-components",
     "polymer",
-    "dygraphs",
-    "dygraph",
-    "dygraph-elements"
+    "graph",
+    "graphs",
+    "chart",
+    "charts",
+    "plot",
+    "plots",
+    "dygraphs"
   ],
   "main": "dygraph-elements.html",
   "license": "http://polymer.github.io/LICENSE.txt",
   "homepage": "https://github.com/reinert/dygraph-elements/",
   "ignore": [
     "/.*",
-    "/test/"
+    "/test/",
+    "/demo/"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.1.0"
