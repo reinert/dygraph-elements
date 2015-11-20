@@ -65,16 +65,13 @@ Often, it is used to show trend data, and the comparison of two data sets.
             this.options.labels = this.data.slice(0, 1)[0];
           }
 
+          // setup options
+          this._setupOptions();
+
           this.graph = new Dygraph(this, this._rawData, this.options);
         } else {
           this._rawData = [];
           this.graph = null;
-        }
-      },
-
-      _updateOptions: function() {
-        if (this.graph) {
-          this.graph.updateOptions(this.options);
         }
       }
 

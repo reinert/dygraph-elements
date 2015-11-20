@@ -16,7 +16,35 @@
 
     observers: [
       '_updateOptions(options.*)'
-    ]
+    ],
+
+    _updateOptions: function() {
+      if (this.graph) {
+        this.graph.updateOptions(this.options);
+      }
+    },
+
+    _setupOptions: function() {
+      if (this.options) {
+        var self = this;
+        this.options.highlightCallback = function(e, x, pts, row, series) {
+          self._fireHighlight(e, x, pts, row, series, this);
+        };
+        this.options.unhighlightCallback = function(e) {
+          self._fireUnhighlight(e, this);
+        };
+      } else {
+        console.warn('Unsuccesfull setup of options. The property is null.');
+      }
+    },
+
+    _fireHighlight: function(e, x, pts, row, series, graph) {
+      this.fire('highlight', {event: e, x: x, points: pts, row: row, series: series, graph: graph});
+    },
+
+    _fireUnhighlight: function(e, graph) {
+      this.fire('unhighlight', {event: e, graph: graph});
+    }
 
   };
 </script>

@@ -119,16 +119,13 @@ Often, it is used to compare two variables in different data sets.
             this.options.valueRange = [yMin - yGap, yMax + yGap];
           }
 
+          // setup options
+          this._setupOptions();
+
           this.graph = new Dygraph(this, this._rawData, this.options);
         } else {
           this._rawData = [];
           this.graph = null;
-        }
-      },
-
-      _updateOptions: function() {
-        if (this.graph) {
-          this.graph.updateOptions(this.options);
         }
       }
 
