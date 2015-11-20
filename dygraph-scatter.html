@@ -123,6 +123,8 @@ Often, it is used to compare two variables in different data sets.
           this._setupOptions();
 
           this.graph = new Dygraph(this, this._rawData, this.options);
+
+          this.graph.rowByLabel = this.rowByLabel;
         } else {
           this._rawData = [];
           this.graph = null;
