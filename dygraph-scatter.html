@@ -140,6 +140,9 @@ Often, it is used to compare two variables in different data sets.
           this.graph = new Dygraph(this, this._rawData, this.options);
 
           this.graph.rowByLabel = this.rowByLabel;
+          this.graph.getRow = function(label) {
+            return this.rowByLabel[label];
+          };
         } else {
           this._rawData = [];
           this.graph = null;
