@@ -18,9 +18,9 @@
       '_updateOptions(options.*)'
     ],
 
-    _updateOptions: function() {
+    _updateOptions: function(options) {
       if (this.graph) {
-        this.graph.updateOptions(this.options);
+        this.graph.updateOptions(options || this.options);
       }
     },
 
@@ -43,7 +43,7 @@
           self._fireZoom(minDate, maxDate, yRanges);
         };
       } else {
-        console.warn('Unsuccesfull setup of options. The options property is null.');
+        console.warn('Unsuccessful setup of options. The options property is null.');
       }
     },
 

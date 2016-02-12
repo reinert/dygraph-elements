@@ -57,21 +57,26 @@ Often, it is used to show trend data, and the comparison of two data sets.
         if (this._isDataAvailable()) {
           this._rawData = this.data.slice(this.noHeader ? 0 : 1);
 
-          if (this.noHeader) {
-            if (this.labels) {
-              this.options.labels = this.labels.slice();
-            }
+          if (this.graph) {
+            // if the graph already exists then refresh data
+            this._updateOptions({file: this._rawData});
           } else {
-            this.options.labels = this.data.slice(0, 1)[0];
+            if (this.noHeader) {
+              if (this.labels) {
+                this.options.labels = this.labels.slice();
+              }
+            } else {
+              this.options.labels = this.data.slice(0, 1)[0];
+            }
+
+            // setup options
+            this._setupOptions();
+
+            this.graph = new Dygraph(this, this._rawData, this.options);
+            this.graph.getRow = function() {
+              return false;
+            };
           }
-
-          // setup options
-          this._setupOptions();
-
-          this.graph = new Dygraph(this, this._rawData, this.options);
-          this.graph.getRow = function(label) {
-            return false;
-          };
         } else {
           this.destroy();
         }

@@ -120,26 +120,32 @@ Often, it is used to compare two variables in different data sets.
             this._rawData.push(item);
           }
 
-          // set x axis range
-          if (this['xGap']) {
-            var xMax = this._rawData[this._rawData.length - 1][0],
-                xMin = this._rawData[0][0];
-            var xGap = (xMax - xMin) * this['xGap'];
-            this.options.dateWindow = [xMin - xGap, xMax + xGap];
+          if (this.graph) {
+            // if the graph already exists then refresh data
+            this._updateOptions({file: this._rawData});
+          } else {
+            // set x axis range
+            if (this['xGap']) {
+              var xMax = this._rawData[this._rawData.length - 1][0],
+                  xMin = this._rawData[0][0];
+              var xGap = (xMax - xMin) * this['xGap'];
+              this.options.dateWindow = [xMin - xGap, xMax + xGap];
+            }
+
+            // set y range
+            if (this['yGap']) {
+              var yGap = (yMax - yMin) * this['yGap'];
+              this.options.valueRange = [yMin - yGap, yMax + yGap];
+            }
+
+            // setup options
+            this._setupOptions();
+
+            this.graph = new Dygraph(this, this._rawData, this.options);
+
+            this.graph.rowByLabel = this.rowByLabel;
           }
 
-          // set y range
-          if (this['yGap']) {
-            var yGap = (yMax - yMin) * this['yGap'];
-            this.options.valueRange = [yMin - yGap, yMax + yGap];
-          }
-
-          // setup options
-          this._setupOptions();
-
-          this.graph = new Dygraph(this, this._rawData, this.options);
-
-          this.graph.rowByLabel = this.rowByLabel;
           this.graph.getRow = function(label) {
             return this.rowByLabel[label];
           };
