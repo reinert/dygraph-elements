@@ -59,7 +59,7 @@ Often, it is used to show trend data, and the comparison of two data sets.
 
           if (this.graph) {
             // if the graph already exists then refresh data
-            this._updateOptions({file: this._rawData});
+            this.graph.updateOptions({file: this._rawData});
           } else {
             if (this.noHeader) {
               if (this.labels) {

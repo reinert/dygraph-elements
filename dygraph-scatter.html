@@ -122,7 +122,7 @@ Often, it is used to compare two variables in different data sets.
 
           if (this.graph) {
             // if the graph already exists then refresh data
-            this._updateOptions({file: this._rawData});
+            this.graph.updateOptions({file: this._rawData});
           } else {
             // set x axis range
             if (this['xGap']) {

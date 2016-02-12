@@ -18,9 +18,9 @@
       '_updateOptions(options.*)'
     ],
 
-    _updateOptions: function(options) {
+    _updateOptions: function() {
       if (this.graph) {
-        this.graph.updateOptions(options || this.options);
+        this.graph.updateOptions(this.options);
       }
     },
 
