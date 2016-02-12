@@ -73,8 +73,7 @@ Often, it is used to show trend data, and the comparison of two data sets.
             return false;
           };
         } else {
-          this._rawData = [];
-          this.graph = null;
+          this.destroy();
         }
       }
 

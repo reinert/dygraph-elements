@@ -8,6 +8,19 @@
         type: Object,
         notify: true
       }
+    },
+
+    destroy: function() {
+      if (this.graph) {
+        this.graph.destroy();
+        this.graph = null;
+      }
+      if (this.data){
+        this.data = null;
+      }
+      if (this._rawData){
+        this._rawData = null;
+      }
     }
 
   };

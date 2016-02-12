@@ -144,8 +144,7 @@ Often, it is used to compare two variables in different data sets.
             return this.rowByLabel[label];
           };
         } else {
-          this._rawData = [];
-          this.graph = null;
+          this.destroy();
         }
       }
 
