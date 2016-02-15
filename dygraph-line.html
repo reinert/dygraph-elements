@@ -72,10 +72,12 @@ Often, it is used to show trend data, and the comparison of two data sets.
             // setup options
             this._setupOptions();
 
-            this.graph = new Dygraph(this, this._rawData, this.options);
-            this.graph.getRow = function() {
-              return false;
-            };
+            this.async(function() {
+              this.graph = new Dygraph(this, this._rawData, this.options);
+              this.graph.getRow = function() {
+                return false;
+              };
+            });
           }
         } else {
           this.destroy();
