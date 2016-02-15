@@ -73,9 +73,9 @@ Often, it is used to compare two variables in different data sets.
         DygraphBehaviors.ScatterPropertiesBehavior
       ],
 
-      getRow: function(label) {
-        return this.rowByLabel ? this.rowByLabel[label] : false;
-      },
+      observers: [
+        '_createGraph(data.*, x, y)'
+      ],
 
       // TODO: colors and visibility handling suggestion
 //      _updateOptions: function() {
@@ -101,7 +101,13 @@ Often, it is used to compare two variables in different data sets.
 //        }
 //      },
 
-      _createGraph: function() {
+      _createGraph: function(data, x, y) {
+        // avoid bug
+        if (typeof data === 'undefined' &&
+            typeof x === 'undefined' &&
+            typeof y === 'undefined')
+          return;
+
         this._applyContainerStyle();
         
         if (this._isDataAvailable() && this._isVarsAvailable()) {

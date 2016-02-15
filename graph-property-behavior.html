@@ -11,14 +11,14 @@
     },
 
     destroy: function() {
-      if (this.graph) {
+      if (this.graph != null) {
         this.graph.destroy();
         this.graph = null;
       }
-      if (this.data){
+      if (this.data != null) {
         this.data = null;
       }
-      if (this._rawData){
+      if (this._rawData != null) {
         this._rawData = null;
       }
     }
