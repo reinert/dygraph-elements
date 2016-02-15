@@ -138,12 +138,8 @@ Often, it is used to compare two variables in different data sets.
 
           // TODO: improve colors and visibility handling
           var _colors, _visibility;
-          if (this.options.colors) {
-            _colors = { length: length };
-          }
-          if (this.options.visibility) {
-            _visibility = { length: length };
-          }
+          if (this.options.colors) { _colors = { length: length }; }
+          if (this.options.visibility) { _visibility = { length: length }; }
           // parse data
           for (i = 0; i < length; i++) {
             var item = {
@@ -163,7 +159,7 @@ Often, it is used to compare two variables in different data sets.
 
             // TODO: improve colors and visibility handling
             idx =
-                this.rowByLabel[this.data[i+this.noHeader ? 0 : 1][this.label]];
+                this.rowByLabel[this.data[i+(this.noHeader ? 0:1)][this.label]];
             if (_colors) { _colors[idx] = this.options.colors[i] }
             if (_visibility) { _visibility[idx] = this.options.visibility[i] }
           }
