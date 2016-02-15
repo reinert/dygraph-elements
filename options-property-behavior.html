@@ -20,7 +20,7 @@
 
     _updateOptions: function() {
       if (this.graph) {
-        this.graph.updateOptions(this.options);
+        this.async(function() { this.graph.updateOptions(this.options); });
       }
     },
 
