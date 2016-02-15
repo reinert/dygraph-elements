@@ -51,6 +51,10 @@ Often, it is used to show trend data, and the comparison of two data sets.
         DygraphBehaviors.ContainerPropertiesBehavior
       ],
 
+      getRow: function(label) {
+        return false;
+      },
+
       _createGraph: function() {
         this._applyContainerStyle();
 

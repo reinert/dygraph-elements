@@ -73,13 +73,41 @@ Often, it is used to compare two variables in different data sets.
         DygraphBehaviors.ScatterPropertiesBehavior
       ],
 
+      getRow: function(label) {
+        return this.rowByLabel ? this.rowByLabel[label] : false;
+      },
+
+      // TODO: colors and visibility handling suggestion
+//      _updateOptions: function() {
+//        if (this.graph) {
+//          var p, _options = {};
+//          for (p in this.options) {
+//            if (this.options.hasOwnProperty(p)) {
+//              if (p === 'colors' || p === 'visibility') {
+//                var i, _sortedCopy = {};
+//                for (i = this.noHeader ? 0 : 1; i < this.data.length; i++) {
+//                  // _FIXME: 'this.label' not necessarily available
+//                  _sortedCopy[this.rowByLabel[this.data[i][this.label]]] =
+//                      this.options[p][i - this.noHeader ? 0 : 1];
+//                }
+//                _options[p] = _sortedCopy;
+//                _options[p].length = this.options[p].length;
+//              } else {
+//                _options[p] = this.options[p];
+//              }
+//            }
+//          }
+//          this.graph.updateOptions(_options);
+//        }
+//      },
+
       _createGraph: function() {
         this._applyContainerStyle();
         
         if (this._isDataAvailable() && this._isVarsAvailable()) {
           var sortedData = this.data.slice(this.noHeader ? 0 : 1),
               length = sortedData.length,
-              x = this.x,
+              x = this.x, i, idx,
               yMin = Number.MAX_VALUE,
               yMax = Number.MIN_VALUE;
 
@@ -91,19 +119,27 @@ Often, it is used to compare two variables in different data sets.
           // parse labels
           this.rowByLabel = {};
 
-          if (this.labels) {
-            this.options.labels = this.labels.slice();
-          } else {
+          // FIXME: this.labels ignored, remove comments
+//          if (this.labels) {
+//            this.options.labels = this.labels.slice();
+//          } else {
             this.options.labels = sortedData.map(function(d, i) {
               this.rowByLabel[d[this.label]] = i;
               return d[this.label];
             }, this);
-          }
-
+//          }
           this.options.labels.unshift(x);
 
+          // TODO: improve colors and visibility handling
+          var _colors, _visibility;
+          if (this.options.colors) {
+            _colors = { length: length };
+          }
+          if (this.options.visibility) {
+            _visibility = { length: length };
+          }
           // parse data
-          for (var i = 0; i < length; i++) {
+          for (i = 0; i < length; i++) {
             var item = {
               "0": sortedData[i][this.x],
               "length": length + 1
@@ -118,7 +154,15 @@ Often, it is used to compare two variables in different data sets.
             yMax = yValue > yMax ? yValue : yMax;
 
             this._rawData.push(item);
+
+            // TODO: improve colors and visibility handling
+            idx =
+                this.rowByLabel[this.data[i+this.noHeader ? 0 : 1][this.label]];
+            if (_colors) { _colors[idx] = this.options.colors[i] }
+            if (_visibility) { _visibility[idx] = this.options.visibility[i] }
           }
+          if (_colors) { this.options.colors = _colors }
+          if (_visibility) { this.options.visibility = _visibility }
 
           if (this.graph) {
             // if the graph already exists then refresh data
