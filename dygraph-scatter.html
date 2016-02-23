@@ -110,7 +110,7 @@ Often, it is used to compare two variables in different data sets.
 
         this._applyContainerStyle();
         
-        if (this.data && this.x && this.y) {
+        if (this.data && this.data != '' && this.x && this.y) {
           var sortedData = this.data.slice(this.noHeader ? 0 : 1),
               length = sortedData.length,
               x = this.x, i, idx,
