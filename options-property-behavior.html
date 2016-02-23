@@ -10,7 +10,13 @@
         value: function () {
           return {};
         }
-      }
+      },
+
+      noHighlightEvent: false,
+      noUnhighlightEvent: false,
+      noPointClickEvent: false,
+      noClickEvent: false,
+      noZoomEvent: false
 
     },
 
@@ -27,23 +33,33 @@
     _setupOptions: function() {
       if (this.options) {
         var self = this;
-        this.options.highlightCallback = function(e, x, pts, row, series) {
-          self._fireHighlight(e, x, pts, row, series, this);
-        };
-        this.options.unhighlightCallback = function(e) {
-          self._fireUnhighlight(e, this);
-        };
-        this.options.pointClickCallback = function(e, point) {
-          self._firePointClick(e, point);
-        };
-        this.options.clickCallback = function(e, x, points) {
-          self._fireGraphClick(e, x, points);
-        };
-        this.options.zoomCallback = function(minDate, maxDate, yRanges) {
-          self._fireZoom(minDate, maxDate, yRanges);
-        };
+        if (!this.noHighlightEvent) {
+          this.options.highlightCallback = function(e, x, pts, row, series) {
+            self._fireHighlight(e, x, pts, row, series, this);
+          };
+        }
+        if (!this.noUnhighlightEvent) {
+          this.options.unhighlightCallback = function(e) {
+            self._fireUnhighlight(e, this);
+          };
+        }
+        if (!this.noPointClickEvent) {
+          this.options.pointClickCallback = function(e, point) {
+            self._firePointClick(e, point);
+          };
+        }
+        if (!this.noClickEvent) {
+          this.options.clickCallback = function(e, x, points) {
+            self._fireGraphClick(e, x, points);
+          };
+        }
+        if (!this.noZoomtEvent) {
+          this.options.zoomCallback = function(minDate, maxDate, yRanges) {
+            self._fireZoom(minDate, maxDate, yRanges);
+          };
+        }
       } else {
-        console.warn('Unsuccessful setup of options. The options property is null.');
+        console.warn('Unsuccessful setup of options. The options property is not available.');
       }
     },
 

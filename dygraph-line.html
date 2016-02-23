@@ -62,7 +62,7 @@ Often, it is used to show trend data, and the comparison of two data sets.
 
         this._applyContainerStyle();
 
-        if (this._isDataAvailable()) {
+        if (this.data) {
           this._rawData = this.data.slice(this.noHeader ? 0 : 1);
 
           if (this.graph) {
