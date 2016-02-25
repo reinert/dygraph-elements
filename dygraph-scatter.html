@@ -74,7 +74,7 @@ Often, it is used to compare two variables in different data sets.
       ],
 
       observers: [
-        '_createGraph(data.*, x, y)'
+        '_createGraph(data.*, x, y, label)'
       ],
 
       // TODO: colors and visibility handling suggestion
@@ -101,105 +101,112 @@ Often, it is used to compare two variables in different data sets.
 //        }
 //      },
 
-      _createGraph: function(data, x, y) {
+      _createGraph: function(dataChange, x, y, label) {
+//        console.warn('DygraphScatter#_createGraph');
+//        console.info(dataChange);
+
         // avoid bug
-        if (typeof data === 'undefined' &&
+        if (typeof dataChange === 'undefined' &&
             typeof x === 'undefined' &&
             typeof y === 'undefined')
           return;
 
+        var data = dataChange.base;
+
+        if (!(data && data.length && x && y)) {
+          this.destroy();
+          return;
+        }
+
         this._applyContainerStyle();
-        
-        if (this.data && this.data != '' && this.x && this.y) {
-          var sortedData = this.data.slice(this.noHeader ? 0 : 1),
-              length = sortedData.length,
-              x = this.x, i, idx,
-              yMin = Number.MAX_VALUE,
-              yMax = Number.MIN_VALUE;
 
-          this._rawData = [];
+        var sortedData = data.slice(this.noHeader ? 0 : 1),
+            length = sortedData.length, i, idx,
+            yMin = Number.MAX_VALUE, yMax = Number.MIN_VALUE;
 
-          // sort by 'x' so the graph is properly displayed
-          sortedData.sort(function(a, b){ return a[x] - b[x]; });
+        this._rawData = [];
 
-          // parse labels
-          this.rowByLabel = {};
+        // sort by 'x' so the graph is properly displayed
+        sortedData.sort(function(a, b){ return a[x] - b[x]; });
 
-          // FIXME: this.labels ignored, remove comments
+        // parse labels
+        this.rowByLabel = {};
+
+        if (!this.options) {
+          this.options = {};
+        }
+
+        // FIXME: this.labels ignored, remove comments
 //          if (this.labels) {
 //            this.options.labels = this.labels.slice();
 //          } else {
-            this.options.labels = sortedData.map(function(d, i) {
-              this.rowByLabel[d[this.label]] = i;
-              return d[this.label];
-            }, this);
+        this.options.labels = sortedData.map(function(d, i) {
+          this.rowByLabel[d[label]] = i;
+          return d[label];
+        }, this);
 //          }
-          this.options.labels.unshift(x);
+        this.options.labels.unshift(x);
+
+        // TODO: improve colors and visibility handling
+        var _colors, _visibility;
+        if (this.options.colors) { _colors = { length: length }; }
+        if (this.options.visibility) { _visibility = { length: length }; }
+        // parse data
+        for (i = 0; i < length; i++) {
+          var item = {
+            "0": sortedData[i][x],
+            "length": length + 1
+          };
+
+          var yValue = sortedData[i][this.y];
+
+          item[i+1] = yValue;
+
+          // yMin and yMax record
+          yMin = yValue < yMin ? yValue : yMin;
+          yMax = yValue > yMax ? yValue : yMax;
+
+          this._rawData.push(item);
 
           // TODO: improve colors and visibility handling
-          var _colors, _visibility;
-          if (this.options.colors) { _colors = { length: length }; }
-          if (this.options.visibility) { _visibility = { length: length }; }
-          // parse data
-          for (i = 0; i < length; i++) {
-            var item = {
-              "0": sortedData[i][this.x],
-              "length": length + 1
-            };
-
-            var yValue = sortedData[i][this.y];
-
-            item[i+1] = yValue;
-
-            // yMin and yMax record
-            yMin = yValue < yMin ? yValue : yMin;
-            yMax = yValue > yMax ? yValue : yMax;
-
-            this._rawData.push(item);
-
-            // TODO: improve colors and visibility handling
-            idx =
-                this.rowByLabel[this.data[i+(this.noHeader ? 0:1)][this.label]];
-            if (_colors) { _colors[idx] = this.options.colors[i] }
-            if (_visibility) { _visibility[idx] = this.options.visibility[i] }
-          }
-          if (_colors) { this.options.colors = _colors }
-          if (_visibility) { this.options.visibility = _visibility }
-
-          if (this.graph) {
-            // if the graph already exists then refresh data
-            this.graph.updateOptions({file: this._rawData});
-          } else {
-            // set x axis range
-            if (this['xGap']) {
-              var xMax = this._rawData[this._rawData.length - 1][0],
-                  xMin = this._rawData[0][0];
-              var xGap = (xMax - xMin) * this['xGap'];
-              this.options.dateWindow = [xMin - xGap, xMax + xGap];
-            }
-
-            // set y range
-            if (this['yGap']) {
-              var yGap = (yMax - yMin) * this['yGap'];
-              this.options.valueRange = [yMin - yGap, yMax + yGap];
-            }
-
-            // setup options
-            this._setupOptions();
-
-            this.async(function() {
-              this.graph = new Dygraph(this, this._rawData, this.options);
-              this.graph.rowByLabel = this.rowByLabel;
-              this.graph.getRow = function(label) {
-                return this.rowByLabel[label];
-              };
-            });
-          }
-        } else {
-          this.destroy();
+          idx =
+              this.rowByLabel[data[i+(this.noHeader ? 0:1)][label]];
+          if (_colors) { _colors[idx] = this.options.colors[i] }
+          if (_visibility) { _visibility[idx] = this.options.visibility[i] }
         }
-      }
+        if (_colors) { this.options.colors = _colors }
+        if (_visibility) { this.options.visibility = _visibility }
 
+        if (this.graph) {
+          // if the graph already exists then clean-up it first
+          this.graph.destroy();
+        }
+
+        // set x axis range
+        if (this['xGap']) {
+          var xMax = this._rawData[this._rawData.length - 1][0],
+              xMin = this._rawData[0][0];
+          var xGap = (xMax - xMin) * this['xGap'];
+          this.options.dateWindow = [xMin - xGap, xMax + xGap];
+        }
+
+        // set y range
+        if (this['yGap']) {
+          var yGap = (yMax - yMin) * this['yGap'];
+          this.options.valueRange = [yMin - yGap, yMax + yGap];
+        }
+
+        // setup options
+        this._setupOptions();
+
+        this.async(function() {
+          this.graph = new Dygraph(this, this._rawData, this.options);
+          this.graph.rowByLabel = this.rowByLabel;
+          this.graph.getRow = function(label) {
+            return this.rowByLabel[label];
+          };
+        });
+      }
     });
   </script>
 </dom-module>

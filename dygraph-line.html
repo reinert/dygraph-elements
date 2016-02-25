@@ -31,11 +31,8 @@ Often, it is used to show trend data, and the comparison of two data sets.
 
 <link rel="import" href="graph-styles.html">
 <dom-module id="dygraph-line">
-
   <template>
-
     <style include="graph-styles"></style>
-
   </template>
 
   <script>
@@ -52,46 +49,57 @@ Often, it is used to show trend data, and the comparison of two data sets.
       ],
 
       observers: [
-        '_createGraph(data.*)'
+        '_createGraph(data.*, noHeader, labels)'
       ],
 
-      _createGraph: function(data) {
+      _createGraph: function(dataChange, noHeader, labels) {
+//        console.warn('DygraphLine#_createGraph');
+//        console.info(dataChange);
+//        console.info(noHeader);
+//        console.info(labels);
+
         // avoid bug
-        if (typeof data === 'undefined')
+        if (typeof dataChange === 'undefined')
           return;
+
+        var data = dataChange.base;
+
+        if (!(data && data.length)) {
+          this.destroy();
+          return;
+        }
 
         this._applyContainerStyle();
 
-        if (this.data && this.data != '') {
-          this._rawData = this.data.slice(this.noHeader ? 0 : 1);
+        this._rawData = data.slice(this.noHeader ? 0 : 1);
 
-          if (this.graph) {
-            // if the graph already exists then refresh data
-            this.graph.updateOptions({file: this._rawData});
-          } else {
-            if (this.noHeader) {
-              if (this.labels) {
-                this.options.labels = this.labels.slice();
-              }
-            } else {
-              this.options.labels = this.data.slice(0, 1)[0];
-            }
+        if (!this.options) {
+          this.options = {};
+        }
 
-            // setup options
-            this._setupOptions();
-
-            this.async(function() {
-              this.graph = new Dygraph(this, this._rawData, this.options);
-              this.graph.getRow = function() {
-                return false;
-              };
-            });
+        if (noHeader) {
+          if (labels) {
+            this.options.labels = labels.slice();
           }
         } else {
-          this.destroy();
+          this.options.labels = data.slice(0, 1)[0];
         }
-      }
 
+        if (this.graph) {
+          // if the graph already exists then clean it up first
+          this.graph.destroy();
+        }
+
+        // setup options
+        this._setupOptions();
+
+        this.async(function() {
+          this.graph = new Dygraph(this, this._rawData, this.options);
+          this.graph.getRow = function() {
+            return false;
+          };
+        });
+      }
     });
   </script>
 </dom-module>

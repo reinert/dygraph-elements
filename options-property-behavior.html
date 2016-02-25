@@ -25,8 +25,8 @@
     ],
 
     _updateOptions: function() {
-      if (this.graph) {
-        this.async(function() { this.graph.updateOptions(this.options); });
+      if (this.graph && this.graph.attributes_) { // check graph is not destroyed
+        this.graph.updateOptions(this.options);
       }
     },
 

@@ -10,7 +10,12 @@
         value: false
       },
 
-      "labels": Array
+      "labels":  {
+        type: Array,
+        value: function() {
+          return null;
+        }
+      }
 
     },
 
@@ -18,13 +23,12 @@
       '_labelsChanged(labels.*)'
     ],
 
-    ready: function() {
-      this.async(this._createGraph, null, 0);
-    },
+    _labelsChanged: function(labelsChange) {
+//      console.warn('GraphFactoryBehavior#_labelsChanged');
+//      console.info(change);
 
-    _labelsChanged: function() {
-      if (this.noHeader) {
-        this.options.labels = this.labels.slice();
+      if (this.noHeader && labelsChange.base && labelsChange.base.length) {
+        this.options.labels = labelsChange.base.slice();
       }
     }
 
