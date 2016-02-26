@@ -16,8 +16,17 @@
       <p>Change to: <button on-tap="applyLogscale">logscale</button></p>
 
       <p>Change data: <button on-tap="changeData">change data</button></p>
+      
+      <p>Change colors: <button on-tap="changeColors">change colors</button></p>
+      
+      <p>Change visibility: <button on-tap="changeVisibility">change visibility</button></p>
 
-      <dygraph-line data="[[data]]" options="[[options]]" width="98%" height="500px"></dygraph-line>
+      <dygraph-line data="[[data]]"
+                    options="[[options]]"
+                    colors="[[colors]]"
+                    visibility="[[visibility]]"
+                    width="98%" height="500px">
+      </dygraph-line>
       
     </template>
 
@@ -46,6 +55,14 @@
           [3,   53,  20],
           [4,   65,  20]
         ];
+      };
+
+      scope.changeColors = function() {
+        this.colors = ['gray', 'red'];
+      };
+
+      scope.changeVisibility = function() {
+        this.visibility = [true, false];
       };
     </script>
 

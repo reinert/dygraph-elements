@@ -1,9 +1,16 @@
 <script>
   var DygraphBehaviors = DygraphBehaviors || {};
   /** @polymerBehavior */
-  DygraphBehaviors.GraphPropertyBehavior = {
+  DygraphBehaviors.GraphBehavior = {
 
     properties: {
+      data: Array,
+
+      noHeader: {
+        type: Boolean,
+        value: false
+      },
+
       graph: {
         type: Object,
         notify: true

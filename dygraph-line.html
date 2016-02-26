@@ -1,11 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="dygraph-combined-import.html">
 <link rel="import" href="dygraph-shapes-import.html">
-<link rel="import" href="graph-factory-behavior.html">
-<link rel="import" href="graph-property-behavior.html">
-<link rel="import" href="options-property-behavior.html">
-<link rel="import" href="data-property-behavior.html">
-<link rel="import" href="container-properties-behavior.html">
+<link rel="import" href="graph-behavior.html">
+<link rel="import" href="options-behavior.html">
+<link rel="import" href="container-behavior.html">
 
 <!--
 A line chart is a way of plotting data points on a line.
@@ -41,18 +39,16 @@ Often, it is used to show trend data, and the comparison of two data sets.
       is: 'dygraph-line',
 
       behaviors: [
-        DygraphBehaviors.GraphFactoryBehavior,
-        DygraphBehaviors.GraphPropertyBehavior,
-        DygraphBehaviors.OptionsPropertyBehavior,
-        DygraphBehaviors.DataPropertyBehavior,
-        DygraphBehaviors.ContainerPropertiesBehavior
+        DygraphBehaviors.GraphBehavior,
+        DygraphBehaviors.OptionsBehavior,
+        DygraphBehaviors.ContainerBehavior
       ],
 
       observers: [
-        '_createGraph(data.*, noHeader, labels)'
+        '_createGraph(data.*, noHeader, labels, options, colors, visibility)'
       ],
 
-      _createGraph: function(dataChange, noHeader, labels) {
+      _createGraph: function(dataChange, noHeader, labels, options, colors, visibility) {
 //        console.warn('DygraphLine#_createGraph');
 //        console.info(dataChange);
 //        console.info(noHeader);
@@ -73,8 +69,12 @@ Often, it is used to show trend data, and the comparison of two data sets.
 
         this._rawData = data.slice(this.noHeader ? 0 : 1);
 
-        if (!this.options) {
-          this.options = {};
+        if (colors) {
+          this.options.colors = colors;
+        }
+
+        if (visibility) {
+          this.options.visibility = visibility;
         }
 
         if (noHeader) {
