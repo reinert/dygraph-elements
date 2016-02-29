@@ -64,7 +64,7 @@ Often, it is used to compare two variables in different data sets.
       behaviors: [
         DygraphBehaviors.GraphBehavior,
         DygraphBehaviors.OptionsBehavior,
-        DygraphBehaviors.ContainerBehavior,
+        DygraphBehaviors.ContainerBehavior
       ],
 
       properties: {
@@ -76,7 +76,7 @@ Often, it is used to compare two variables in different data sets.
       },
 
       observers: [
-        '_createGraph(data.*, x, y, label, options, colors, visibility)'
+        '_createGraph(data.*, x, y, label)'
       ],
 
       // TODO: colors and visibility handling suggestion
@@ -103,15 +103,12 @@ Often, it is used to compare two variables in different data sets.
 //        }
 //      },
 
-      _createGraph: function(dataChange, x, y, label, options, colors, visibility) {
-//        console.warn('DygraphScatter#_createGraph');
-//        console.info(dataChange);
-
-        // avoid bug
-        if (typeof dataChange === 'undefined' &&
-            typeof x === 'undefined' &&
-            typeof y === 'undefined')
-          return;
+      _createGraph: function(dataChange, x, y, label) {
+        console.warn('DygraphScatter#_createGraph');
+        console.info(dataChange);
+        console.info(x);
+        console.info(y);
+        console.info(label);
 
         var data = dataChange.base;
 
@@ -123,8 +120,8 @@ Often, it is used to compare two variables in different data sets.
         this._applyContainerStyle();
 
         var sortedData = data.slice(this.noHeader ? 0 : 1),
-            length = sortedData.length, i, idx,
-            yMin = Number.MAX_VALUE, yMax = Number.MIN_VALUE;
+                length = sortedData.length, i, idx,
+                yMin = Number.MAX_VALUE, yMax = Number.MIN_VALUE;
 
         this._rawData = [];
 
@@ -134,12 +131,17 @@ Often, it is used to compare two variables in different data sets.
         // parse labels
         this.rowByLabel = {};
 
-        if (colors) {
-          this.options.colors = colors;
+        if (!this.options) {
+          this.options = {};
         }
 
-        if (visibility) {
-          this.options.visibility = visibility;
+        // TODO: colors and visibility conflicting with below logic
+        if (this.colors) {
+          this.options.colors = this.colors;
+        }
+
+        if (this.visibility) {
+          this.options.visibility = this.visibility;
         }
 
         // FIXME: this.labels ignored, remove comments
@@ -175,8 +177,7 @@ Often, it is used to compare two variables in different data sets.
           this._rawData.push(item);
 
           // TODO: improve colors and visibility handling
-          idx =
-              this.rowByLabel[data[i+(this.noHeader ? 0:1)][label]];
+          idx = this.rowByLabel[data[i+(this.noHeader ? 0:1)][label]];
           if (_colors) { _colors[idx] = this.options.colors[i] }
           if (_visibility) { _visibility[idx] = this.options.visibility[i] }
         }
@@ -191,7 +192,7 @@ Often, it is used to compare two variables in different data sets.
         // set x axis range
         if (this['xGap']) {
           var xMax = this._rawData[this._rawData.length - 1][0],
-              xMin = this._rawData[0][0];
+                  xMin = this._rawData[0][0];
           var xGap = (xMax - xMin) * this['xGap'];
           this.options.dateWindow = [xMin - xGap, xMax + xGap];
         }
@@ -206,7 +207,7 @@ Often, it is used to compare two variables in different data sets.
         this._setupOptions();
 
         this.async(function() {
-          this.graph = new Dygraph(this, this._rawData, this.options);
+          this._setGraph(new Dygraph(this, this._rawData, this.options));
           this.graph.rowByLabel = this.rowByLabel;
           this.graph.getRow = function(label) {
             return this.rowByLabel[label];

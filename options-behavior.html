@@ -4,7 +4,6 @@
   DygraphBehaviors.OptionsBehavior = {
 
     properties: {
-
       options: {
         type: Object,
         value: function () {
@@ -12,26 +11,9 @@
         }
       },
 
-      labels:  {
-        type: Array,
-        value: function() {
-          return null;
-        }
-      },
-
-      colors: {
-        type: Array,
-        value: function () {
-          return null;
-        }
-      },
-
-      visibility: {
-        type: Array,
-        value: function () {
-          return null;
-        }
-      },
+      labels: Array,
+      colors: Array,
+      visibility: Array,
 
       noHighlightEvent: Boolean,
       noUnhighlightEvent: Boolean,

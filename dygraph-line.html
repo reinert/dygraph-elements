@@ -45,18 +45,13 @@ Often, it is used to show trend data, and the comparison of two data sets.
       ],
 
       observers: [
-        '_createGraph(data.*, noHeader, labels, options, colors, visibility)'
+        '_createGraph(data.*, noHeader)'
       ],
 
-      _createGraph: function(dataChange, noHeader, labels, options, colors, visibility) {
-//        console.warn('DygraphLine#_createGraph');
-//        console.info(dataChange);
-//        console.info(noHeader);
-//        console.info(labels);
-
-        // avoid bug
-        if (typeof dataChange === 'undefined')
-          return;
+      _createGraph: function(dataChange, noHeader) {
+        console.warn('DygraphLine#_createGraph');
+        console.info(dataChange);
+        console.info(noHeader);
 
         var data = dataChange.base;
 
@@ -69,17 +64,21 @@ Often, it is used to show trend data, and the comparison of two data sets.
 
         this._rawData = data.slice(this.noHeader ? 0 : 1);
 
-        if (colors) {
-          this.options.colors = colors;
+        if (!this.options) {
+          this.options = {};
         }
 
-        if (visibility) {
-          this.options.visibility = visibility;
+        if (this.colors) {
+          this.options.colors = this.colors;
+        }
+
+        if (this.visibility) {
+          this.options.visibility = this.visibility;
         }
 
         if (noHeader) {
-          if (labels) {
-            this.options.labels = labels.slice();
+          if (this.labels) {
+            this.options.labels = this.labels;
           }
         } else {
           this.options.labels = data.slice(0, 1)[0];
@@ -94,7 +93,7 @@ Often, it is used to show trend data, and the comparison of two data sets.
         this._setupOptions();
 
         this.async(function() {
-          this.graph = new Dygraph(this, this._rawData, this.options);
+          this._setGraph(new Dygraph(this, this._rawData, this.options));
           this.graph.getRow = function() {
             return false;
           };
