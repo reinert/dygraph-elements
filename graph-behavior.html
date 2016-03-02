@@ -1,19 +1,27 @@
 <script>
   var DygraphBehaviors = DygraphBehaviors || {};
   /** @polymerBehavior */
-  DygraphBehaviors.GraphPropertyBehavior = {
+  DygraphBehaviors.GraphBehavior = {
 
     properties: {
+      data: Array,
+
+      noHeader: {
+        type: Boolean,
+        value: false
+      },
+
       graph: {
         type: Object,
-        notify: true
+        notify: true,
+        readOnly: true
       }
     },
 
     destroy: function() {
       if (this.graph != null) {
         this.graph.destroy();
-        this.graph = null;
+        this._setGraph(null);
       }
       if (this.data != null) {
         this.data = null;

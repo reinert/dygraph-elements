@@ -1,10 +1,9 @@
 <script>
   var DygraphBehaviors = DygraphBehaviors || {};
   /** @polymerBehavior */
-  DygraphBehaviors.OptionsPropertyBehavior = {
+  DygraphBehaviors.OptionsBehavior = {
 
     properties: {
-
       options: {
         type: Object,
         value: function () {
@@ -12,21 +11,55 @@
         }
       },
 
+      labels: Array,
+      colors: Array,
+      visibility: Array,
+
       noHighlightEvent: Boolean,
       noUnhighlightEvent: Boolean,
       noPointClickEvent: Boolean,
       noClickEvent: Boolean,
       noZoomEvent: Boolean
-
     },
 
     observers: [
-      '_updateOptions(options.*)'
+      '_updateOptions(options.*)',
+      '_updateLabels(labels.*)',
+      '_updateColors(colors.*)',
+      '_updateVisibility(visibility.*)'
     ],
 
-    _updateOptions: function() {
-      if (this.graph && this.graph.attributes_) { // check graph is not destroyed
-        this.graph.updateOptions(this.options);
+    _updateLabels: function(labelsChange) {
+      if (this.noHeader) {
+        this.options.labels = labelsChange.base;
+        if (labelsChange.base && labelsChange.base.length) {
+          this._updateOptions({base: {labels: labelsChange.base}});
+        }
+      }
+    },
+
+    _updateColors: function(colorsChange) {
+//      console.warn('OptionsBehavior#_updateColors');
+      this.options.colors = colorsChange.base;
+      if (colorsChange.base && colorsChange.base.length) {
+//        console.info('updating colors...');
+        this._updateOptions({base: {colors: colorsChange.base}});
+      }
+    },
+
+    _updateVisibility: function(visibilityChange) {
+//      console.warn('OptionsBehavior#_updateVisibility');
+      this.options.visibility = visibilityChange.base;
+      if (visibilityChange.base && visibilityChange.base.length) {
+//        console.info('updating visibility...');
+        this._updateOptions({base: {visibility: visibilityChange.base}});
+      }
+    },
+
+    _updateOptions: function(optionsChange) {
+      // check graph is not destroyed and options is not empty
+      if (this.graph && this.graph.attributes_ && optionsChange.base && Object.keys(optionsChange.base).length) {
+        this.graph.updateOptions(optionsChange.base);
       }
     },
 

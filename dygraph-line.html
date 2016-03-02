@@ -1,11 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="dygraph-combined-import.html">
 <link rel="import" href="dygraph-shapes-import.html">
-<link rel="import" href="graph-factory-behavior.html">
-<link rel="import" href="graph-property-behavior.html">
-<link rel="import" href="options-property-behavior.html">
-<link rel="import" href="data-property-behavior.html">
-<link rel="import" href="container-properties-behavior.html">
+<link rel="import" href="graph-behavior.html">
+<link rel="import" href="options-behavior.html">
+<link rel="import" href="container-behavior.html">
 
 <!--
 A line chart is a way of plotting data points on a line.
@@ -41,26 +39,19 @@ Often, it is used to show trend data, and the comparison of two data sets.
       is: 'dygraph-line',
 
       behaviors: [
-        DygraphBehaviors.GraphFactoryBehavior,
-        DygraphBehaviors.GraphPropertyBehavior,
-        DygraphBehaviors.OptionsPropertyBehavior,
-        DygraphBehaviors.DataPropertyBehavior,
-        DygraphBehaviors.ContainerPropertiesBehavior
+        DygraphBehaviors.GraphBehavior,
+        DygraphBehaviors.OptionsBehavior,
+        DygraphBehaviors.ContainerBehavior
       ],
 
       observers: [
-        '_createGraph(data.*, noHeader, labels)'
+        '_createGraph(data.*, noHeader)'
       ],
 
-      _createGraph: function(dataChange, noHeader, labels) {
-//        console.warn('DygraphLine#_createGraph');
-//        console.info(dataChange);
-//        console.info(noHeader);
-//        console.info(labels);
-
-        // avoid bug
-        if (typeof dataChange === 'undefined')
-          return;
+      _createGraph: function(dataChange, noHeader) {
+        console.warn('DygraphLine#_createGraph');
+        console.info(dataChange);
+        console.info(noHeader);
 
         var data = dataChange.base;
 
@@ -77,9 +68,17 @@ Often, it is used to show trend data, and the comparison of two data sets.
           this.options = {};
         }
 
+        if (this.colors) {
+          this.options.colors = this.colors;
+        }
+
+        if (this.visibility) {
+          this.options.visibility = this.visibility;
+        }
+
         if (noHeader) {
-          if (labels) {
-            this.options.labels = labels.slice();
+          if (this.labels) {
+            this.options.labels = this.labels;
           }
         } else {
           this.options.labels = data.slice(0, 1)[0];
@@ -94,7 +93,7 @@ Often, it is used to show trend data, and the comparison of two data sets.
         this._setupOptions();
 
         this.async(function() {
-          this.graph = new Dygraph(this, this._rawData, this.options);
+          this._setGraph(new Dygraph(this, this._rawData, this.options));
           this.graph.getRow = function() {
             return false;
           };
