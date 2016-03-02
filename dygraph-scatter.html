@@ -205,6 +205,11 @@ Often, it is used to compare two variables in different data sets.
           this.graph.getRow = function(label) {
             return this.rowByLabel[label];
           };
+          this.graph.mouseMove_ = function(e) {
+            if (!this.lockedSet_) {
+              Dygraph.prototype.mouseMove_.call(this, e);
+            }
+          };
         });
       }
     });
