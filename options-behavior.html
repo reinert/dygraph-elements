@@ -123,12 +123,10 @@
     },
 
     _updateOptions: function(options, blockRedraw, forceUpdate) {
-      console.warn('OptionsBehavior#_updateOptions');
-      console.info(blockRedraw);
-      console.info(forceUpdate);
+//      console.warn('OptionsBehavior#_updateOptions');
       // check graph is not destroyed and options is not empty
       if ((forceUpdate || !this.noAutoUpdate) && this.graph && this.graph.attributes_) {
-        console.info('updating...');
+//        console.info('updating...');
         this.graph.updateOptions(options, blockRedraw || false);
       }
     },
