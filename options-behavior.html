@@ -85,7 +85,7 @@
     },
 
     refresh: function() {
-      this._updateOptions(this.options);
+      this._updateOptions(this.options, false, true);
     },
 
     _updateLabels: function(labelsChange) {
@@ -122,11 +122,14 @@
       }
     },
 
-    _updateOptions: function(options, redraw) {
+    _updateOptions: function(options, blockRedraw, forceUpdate) {
       console.warn('OptionsBehavior#_updateOptions');
+      console.info(blockRedraw);
+      console.info(forceUpdate);
       // check graph is not destroyed and options is not empty
-      if (!this.noAutoUpdate && this.graph && this.graph.attributes_) {
-        this.graph.updateOptions(options, redraw != null ? redraw : undefined);
+      if ((forceUpdate || !this.noAutoUpdate) && this.graph && this.graph.attributes_) {
+        console.info('updating...');
+        this.graph.updateOptions(options, blockRedraw || false);
       }
     },
 
@@ -167,25 +170,25 @@
       var unhighlightCallback = this.__unhighlightCallback;
       this.options.highlightCallback = highlightCallback;
       this.options.unhighlightCallback = unhighlightCallback;
-      this._updateOptions({ highlightCallback: highlightCallback, unhighlightCallback: unhighlightCallback }, false);
+      this._updateOptions({ highlightCallback: highlightCallback, unhighlightCallback: unhighlightCallback }, true);
     },
 
     __noPointClickEventChanged: function() {
       var pointClickCallback = this.__pointClickCallback;
       this.options.pointClickCallback = pointClickCallback;
-      this._updateOptions({ pointClickCallback: pointClickCallback }, false);
+      this._updateOptions({ pointClickCallback: pointClickCallback }, true);
     },
 
     __noClickEventChanged: function() {
       var clickCallback = this.__clickCallback;
       this.options.clickCallback = clickCallback;
-      this._updateOptions({ clickCallback: clickCallback }, false);
+      this._updateOptions({ clickCallback: clickCallback }, true);
     },
 
     __noZoomEventChanged: function() {
       var zoomCallback = this.__zoomCallback;
       this.options.zoomCallback = zoomCallback;
-      this._updateOptions({ zoomCallback: zoomCallback }, false);
+      this._updateOptions({ zoomCallback: zoomCallback }, true);
     }
 
   };
