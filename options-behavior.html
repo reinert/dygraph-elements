@@ -15,11 +15,26 @@
       colors: Array,
       visibility: Array,
 
-      noHighlightEvent: Boolean,
-      noUnhighlightEvent: Boolean,
-      noPointClickEvent: Boolean,
-      noClickEvent: Boolean,
-      noZoomEvent: Boolean
+      noHighlightEvent: {
+        type: Boolean,
+        value: false,
+        observer: '__noHighlightEventChanged'
+      },
+      noPointClickEvent: {
+        type: Boolean,
+        value: false,
+        observer: '__noPointClickEventChanged'
+      },
+      noClickEvent: {
+        type: Boolean,
+        value: false,
+        observer: '__noClickEventChanged'
+      },
+      noZoomEvent: {
+        type: Boolean,
+        value: false,
+        observer: '__noZoomEventChanged'
+      }
     },
 
     observers: [
@@ -70,8 +85,6 @@
           this.options.highlightCallback = function(e, x, pts, row, series) {
             self._fireHighlight(e, x, pts, row, series, this);
           };
-        }
-        if (!this.noUnhighlightEvent) {
           this.options.unhighlightCallback = function(e) {
             self._fireUnhighlight(e, this);
           };
@@ -86,7 +99,7 @@
             self._fireGraphClick(e, x, points);
           };
         }
-        if (!this.noZoomtEvent) {
+        if (!this.noZoomEvent) {
           this.options.zoomCallback = function(minDate, maxDate, yRanges) {
             self._fireZoom(minDate, maxDate, yRanges);
           };
@@ -114,6 +127,63 @@
 
     _fireZoom: function(minDate, maxDate, yRanges) {
       this.fire('zoom', {minDate: minDate, maxDate: maxDate, yRanges: yRanges});
+    },
+
+    __noHighlightEventChanged: function(value) {
+      var self = this;
+
+      var highlightCallback = value ? null : function(e, x, pts, row, series) {
+        self._fireHighlight(e, x, pts, row, series, this);
+      };
+      var unhighlightCallback = value ? null : function(e) {
+        self._fireUnhighlight(e, this);
+      };
+
+      this.options.highlightCallback = highlightCallback;
+      this.options.unhighlightCallback = unhighlightCallback;
+
+      if (this.graph) {
+        this.graph.updateOptions({
+          highlightCallback: highlightCallback,
+          unhighlightCallback: unhighlightCallback
+        }, false);
+      }
+    },
+
+    __noPointClickEventChanged: function(value) {
+      var self = this;
+
+      var pointClickCallback = value ? null : function(e, point) {
+        self._firePointClick(e, point);
+      };
+
+      this.options.pointClickCallback = pointClickCallback;
+
+      if (this.graph) this.graph.updateOptions({ pointClickCallback: pointClickCallback }, false);
+    },
+
+    __noClickEventChanged: function(value) {
+      var self = this;
+
+      var clickCallback = function(e, x, points) {
+        self._fireGraphClick(e, x, points);
+      };
+
+      this.options.clickCallback = value ? null : clickCallback;
+
+      if (this.graph) this.graph.updateOptions({ clickCallback: clickCallback }, false);
+    },
+
+    __noZoomEventChanged: function(value) {
+      var self = this;
+
+      var zoomCallback = value ? null : function(minDate, maxDate, yRanges) {
+        self._fireZoom(minDate, maxDate, yRanges);
+      };
+
+      this.options.zoomCallback = zoomCallback;
+
+      if (this.graph) this.graph.updateOptions({ zoomCallback: zoomCallback }, false);
     }
 
   };
