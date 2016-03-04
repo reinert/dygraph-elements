@@ -4,6 +4,11 @@
   DygraphBehaviors.OptionsBehavior = {
 
     properties: {
+      noAutoUpdate: {
+        type: Boolean,
+        value: false
+      },
+
       options: {
         type: Object,
         value: function () {
@@ -38,17 +43,56 @@
     },
 
     observers: [
-      '_updateOptions(options.*)',
+      '_optionsChanged(options.*)',
       '_updateLabels(labels.*)',
       '_updateColors(colors.*)',
       '_updateVisibility(visibility.*)'
     ],
 
+    get __highlightCallback() {
+      var self = this;
+      return this.noHighlightEvent ? null : function(e, x, pts, row, series) {
+        self._fireHighlight(e, x, pts, row, series, this);
+      }
+    },
+
+    get __unhighlightCallback() {
+      var self = this;
+      return this.noUnhighlightEvent ? null : function(e) {
+        self._fireUnhighlight(e, this);
+      }
+    },
+
+    get __pointClickCallback() {
+      var self = this;
+      return this.noPointClickEvent ? null : function(e, point) {
+        self._firePointClick(e, point);
+      }
+    },
+
+    get __clickCallback() {
+      var self = this;
+      return this.noClickEvent ? null : function(e, x, points) {
+        self._fireGraphClick(e, x, points);
+      }
+    },
+
+    get __zoomCallback() {
+      var self = this;
+      return this.noZoomEvent ? null : function(minDate, maxDate, yRanges) {
+        self._fireZoom(minDate, maxDate, yRanges);
+      }
+    },
+
+    refresh: function() {
+      this._updateOptions(this.options);
+    },
+
     _updateLabels: function(labelsChange) {
       if (this.noHeader) {
         this.options.labels = labelsChange.base;
         if (labelsChange.base && labelsChange.base.length) {
-          this._updateOptions({base: {labels: labelsChange.base}});
+          this._updateOptions({labels: labelsChange.base});
         }
       }
     },
@@ -58,7 +102,7 @@
       this.options.colors = colorsChange.base;
       if (colorsChange.base && colorsChange.base.length) {
 //        console.info('updating colors...');
-        this._updateOptions({base: {colors: colorsChange.base}});
+        this._updateOptions({colors: colorsChange.base});
       }
     },
 
@@ -67,43 +111,32 @@
       this.options.visibility = visibilityChange.base;
       if (visibilityChange.base && visibilityChange.base.length) {
 //        console.info('updating visibility...');
-        this._updateOptions({base: {visibility: visibilityChange.base}});
+        this._updateOptions({visibility: visibilityChange.base});
       }
     },
 
-    _updateOptions: function(optionsChange) {
+    _optionsChanged: function(optionsChange) {
       // check graph is not destroyed and options is not empty
-      if (this.graph && this.graph.attributes_ && optionsChange.base && Object.keys(optionsChange.base).length) {
-        this.graph.updateOptions(optionsChange.base);
+      if (optionsChange.base && Object.keys(optionsChange.base).length) {
+        this._updateOptions(optionsChange.base);
+      }
+    },
+
+    _updateOptions: function(options, redraw) {
+      console.warn('OptionsBehavior#_updateOptions');
+      // check graph is not destroyed and options is not empty
+      if (!this.noAutoUpdate && this.graph && this.graph.attributes_) {
+        this.graph.updateOptions(options, redraw != null ? redraw : undefined);
       }
     },
 
     _setupOptions: function() {
       if (this.options) {
-        var self = this;
-        if (!this.noHighlightEvent) {
-          this.options.highlightCallback = function(e, x, pts, row, series) {
-            self._fireHighlight(e, x, pts, row, series, this);
-          };
-          this.options.unhighlightCallback = function(e) {
-            self._fireUnhighlight(e, this);
-          };
-        }
-        if (!this.noPointClickEvent) {
-          this.options.pointClickCallback = function(e, point) {
-            self._firePointClick(e, point);
-          };
-        }
-        if (!this.noClickEvent) {
-          this.options.clickCallback = function(e, x, points) {
-            self._fireGraphClick(e, x, points);
-          };
-        }
-        if (!this.noZoomEvent) {
-          this.options.zoomCallback = function(minDate, maxDate, yRanges) {
-            self._fireZoom(minDate, maxDate, yRanges);
-          };
-        }
+        this.options.highlightCallback = this.__highlightCallback;
+        this.options.unhighlightCallback = this.__unhighlightCallback;
+        this.options.pointClickCallback = this.__pointClickCallback;
+        this.options.clickCallback = this.__clickCallback;
+        this.options.zoomCallback = this.__zoomCallback;
       } else {
         console.warn('Unsuccessful setup of options. The options property is not available.');
       }
@@ -129,61 +162,30 @@
       this.fire('zoom', {minDate: minDate, maxDate: maxDate, yRanges: yRanges});
     },
 
-    __noHighlightEventChanged: function(value) {
-      var self = this;
-
-      var highlightCallback = value ? null : function(e, x, pts, row, series) {
-        self._fireHighlight(e, x, pts, row, series, this);
-      };
-      var unhighlightCallback = value ? null : function(e) {
-        self._fireUnhighlight(e, this);
-      };
-
+    __noHighlightEventChanged: function() {
+      var highlightCallback = this.__highlightCallback;
+      var unhighlightCallback = this.__unhighlightCallback;
       this.options.highlightCallback = highlightCallback;
       this.options.unhighlightCallback = unhighlightCallback;
-
-      if (this.graph) {
-        this.graph.updateOptions({
-          highlightCallback: highlightCallback,
-          unhighlightCallback: unhighlightCallback
-        }, false);
-      }
+      this._updateOptions({ highlightCallback: highlightCallback, unhighlightCallback: unhighlightCallback }, false);
     },
 
-    __noPointClickEventChanged: function(value) {
-      var self = this;
-
-      var pointClickCallback = value ? null : function(e, point) {
-        self._firePointClick(e, point);
-      };
-
+    __noPointClickEventChanged: function() {
+      var pointClickCallback = this.__pointClickCallback;
       this.options.pointClickCallback = pointClickCallback;
-
-      if (this.graph) this.graph.updateOptions({ pointClickCallback: pointClickCallback }, false);
+      this._updateOptions({ pointClickCallback: pointClickCallback }, false);
     },
 
-    __noClickEventChanged: function(value) {
-      var self = this;
-
-      var clickCallback = function(e, x, points) {
-        self._fireGraphClick(e, x, points);
-      };
-
-      this.options.clickCallback = value ? null : clickCallback;
-
-      if (this.graph) this.graph.updateOptions({ clickCallback: clickCallback }, false);
+    __noClickEventChanged: function() {
+      var clickCallback = this.__clickCallback;
+      this.options.clickCallback = clickCallback;
+      this._updateOptions({ clickCallback: clickCallback }, false);
     },
 
-    __noZoomEventChanged: function(value) {
-      var self = this;
-
-      var zoomCallback = value ? null : function(minDate, maxDate, yRanges) {
-        self._fireZoom(minDate, maxDate, yRanges);
-      };
-
+    __noZoomEventChanged: function() {
+      var zoomCallback = this.__zoomCallback;
       this.options.zoomCallback = zoomCallback;
-
-      if (this.graph) this.graph.updateOptions({ zoomCallback: zoomCallback }, false);
+      this._updateOptions({ zoomCallback: zoomCallback }, false);
     }
 
   };
