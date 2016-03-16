@@ -93,10 +93,11 @@ Often, it is used to show trend data, and the comparison of two data sets.
         this._setupOptions();
 
         this.async(function() {
-          this._setGraph(new Dygraph(this, this._rawData, this.options));
-          this.graph.getRow = function() {
+          var g = new Dygraph(this, this._rawData, this.options);
+          g.getRow = function() {
             return false;
           };
+          this._setGraph(g);
         });
       }
     });

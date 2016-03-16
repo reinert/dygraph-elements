@@ -207,16 +207,17 @@ Often, it is used to compare two variables in different data sets.
         this._setupOptions();
 
         this.async(function() {
-          this._setGraph(new Dygraph(this, this._rawData, this.options));
-          this.graph.rowByLabel = this.rowByLabel;
-          this.graph.getRow = function(label) {
+          var g = new Dygraph(this, this._rawData, this.options);
+          g.rowByLabel = this.rowByLabel;
+          g.getRow = function(label) {
             return this.rowByLabel[label];
           };
-          this.graph.mouseMove_ = function(e) {
+          g.mouseMove_ = function(e) {
             if (!this.lockedSet_) {
               Dygraph.prototype.mouseMove_.call(this, e);
             }
           };
+          this._setGraph(g);
         });
       }
     });
