@@ -98,19 +98,15 @@
     },
 
     _updateColors: function(colorsChange) {
-//      console.warn('OptionsBehavior#_updateColors');
       this.options.colors = colorsChange.base;
       if (colorsChange.base && colorsChange.base.length) {
-//        console.info('updating colors...');
         this._updateOptions({colors: colorsChange.base});
       }
     },
 
     _updateVisibility: function(visibilityChange) {
-//      console.warn('OptionsBehavior#_updateVisibility');
       this.options.visibility = visibilityChange.base;
       if (visibilityChange.base && visibilityChange.base.length) {
-//        console.info('updating visibility...');
         this._updateOptions({visibility: visibilityChange.base});
       }
     },
@@ -123,10 +119,8 @@
     },
 
     _updateOptions: function(options, blockRedraw, forceUpdate) {
-//      console.warn('OptionsBehavior#_updateOptions');
       // check graph is not destroyed and options is not empty
       if ((forceUpdate || !this.noAutoUpdate) && this.graph && this.graph.attributes_) {
-//        console.info('updating...');
         this.graph.updateOptions(options, blockRedraw || false);
       }
     },
