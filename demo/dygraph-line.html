@@ -16,18 +16,29 @@
       <p>Change to: <button on-tap="applyLogscale">logscale</button></p>
 
       <p>Change data: <button on-tap="changeData">change data</button></p>
-      
+
       <p>Change colors: <button on-tap="changeColors">change colors</button></p>
-      
+
       <p>Change visibility: <button on-tap="changeVisibility">change visibility</button></p>
 
-      <dygraph-line data="[[data]]"
+      <p>
+        Change roll-period:
+        <button on-tap="changeRollPeriod" value="20">20</button>
+        <button on-tap="changeRollPeriod" value="15">15</button>
+        <button on-tap="changeRollPeriod" value="10">10</button>
+        <button on-tap="changeRollPeriod" value="5">5</button>
+        <button on-tap="resetRollPeriod">reset</button>
+      </p>
+
+      <dygraph-line id="graph"
+                    data="[[data]]"
                     options="[[options]]"
                     colors="[[colors]]"
                     visibility="[[visibility]]"
+                    roll-period="[[rollPeriod]]"
                     width="98%" height="500px">
       </dygraph-line>
-      
+
     </template>
 
     <script>
@@ -161,6 +172,14 @@
 
       scope.changeVisibility = function() {
         this.visibility = [true, false];
+      };
+
+      scope.changeRollPeriod = function(event) {
+        this.rollPeriod = Polymer.dom(event).rootTarget.getAttribute('value');
+      };
+
+      scope.resetRollPeriod = function() {
+        this.$.graph.resetDateWindow();
       };
     </script>
 
