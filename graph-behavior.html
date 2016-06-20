@@ -15,8 +15,33 @@
         type: Object,
         notify: true,
         readOnly: true
+      },
+
+      /**
+       * The roll pariod.
+       *
+       * @type {Number}
+       * @default undefined
+       */
+      rollPeriod: {
+        type: Number
+      },
+
+      /**
+       * The range displayed at the first loading.
+       *
+       * @type {Array}
+       */
+      _originalRange: {
+        type: Array,
+        readOnly: true
       }
     },
+
+    observers: [
+      '_setOriginalRange(data)',
+      '_updateDateWindow(rollPeriod)'
+    ],
 
     destroy: function() {
       if (this.graph != null) {
@@ -29,6 +54,40 @@
       if (this._rawData != null) {
         this._rawData = null;
       }
+    },
+
+    /**
+     * Resets the date window with the original range.
+     */
+    resetDateWindow: function() {
+      this.graph.updateOptions({dateWindow: this._originalRange});
+    },
+
+    /**
+     * Sets the original range with the data horizon.
+     *
+     * @param  {Array} data consumed by the graph
+     */
+    _setOriginalRange: function(data) {
+      if (data && data.length) {
+        // Start at the index 1 because the first row is labels.
+        var start = data[1][0];
+        var end = data[data.length - 1][0];
+        this._originalRange = (start && end) ?
+          [start.valueOf(), end.valueOf()] : [];
+      }
+    },
+
+    /**
+     * Updates the date window. The start of the window is the current origin.
+     * The end of the window is the start point plus offset of the roll period.
+     *
+     * @param  {Number} rollPeriod the roll period to set
+     */
+    _updateDateWindow: function(rollPeriod) {
+      var w = this.graph.xAxisRange();
+      var range = [w[0], w[0] + Number(rollPeriod)];
+      this.graph.updateOptions({dateWindow: range});
     }
 
   };
