@@ -49,10 +49,6 @@ Often, it is used to show trend data, and the comparison of two data sets.
       ],
 
       _createGraph: function(dataChange, noHeader) {
-        console.warn('DygraphLine#_createGraph');
-        console.info(dataChange);
-        console.info(noHeader);
-
         var data = dataChange.base;
 
         if (!(data && data.length)) {

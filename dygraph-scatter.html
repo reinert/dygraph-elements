@@ -104,12 +104,6 @@ Often, it is used to compare two variables in different data sets.
 //      },
 
       _createGraph: function(dataChange, x, y, label) {
-        console.warn('DygraphScatter#_createGraph');
-        console.info(dataChange);
-        console.info(x);
-        console.info(y);
-        console.info(label);
-
         var data = dataChange.base;
 
         if (!(data && data.length && x && y)) {
