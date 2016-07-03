@@ -30,13 +30,21 @@
         <button on-tap="resetRollPeriod">reset</button>
       </p>
 
+      <p>
+        Animated:
+        <input id="animated" type="checkbox" name="animated" checked="{{animated::change}}">
+        <label for="animated" hidden$="[[!animated]]">true</label>
+        <label for="animated" hidden$="[[animated]]">false</label>
+      </p>
+
       <dygraph-line id="graph"
                     data="[[data]]"
                     options="[[options]]"
                     colors="[[colors]]"
                     visibility="[[visibility]]"
                     roll-period="[[rollPeriod]]"
-                    width="98%" height="500px">
+                    width="98%" height="500px"
+                    animated="{{animated}}">
       </dygraph-line>
 
     </template>
