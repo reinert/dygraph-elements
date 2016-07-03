@@ -25,21 +25,10 @@
        */
       rollPeriod: {
         type: Number
-      },
-
-      /**
-       * The range displayed at the first loading.
-       *
-       * @type {Array}
-       */
-      _originalRange: {
-        type: Array,
-        readOnly: true
       }
     },
 
     observers: [
-      '_setOriginalRange(data)',
       '_updateDateWindow(rollPeriod)'
     ],
 
@@ -60,22 +49,7 @@
      * Resets the date window with the original range.
      */
     resetDateWindow: function() {
-      this.graph.updateOptions({dateWindow: this._originalRange});
-    },
-
-    /**
-     * Sets the original range with the data horizon.
-     *
-     * @param  {Array} data consumed by the graph
-     */
-    _setOriginalRange: function(data) {
-      if (data && data.length) {
-        // Start at the index 1 because the first row is labels.
-        var start = data[1][0];
-        var end = data[data.length - 1][0];
-        this._originalRange = (start && end) ?
-          [start.valueOf(), end.valueOf()] : [];
-      }
+      this.graph.updateOptions({dateWindow: undefined});
     },
 
     /**
