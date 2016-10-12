@@ -1,6 +1,6 @@
 <script>
   var DygraphBehaviors = DygraphBehaviors || {};
-  /** @polymerBehavior */
+  /* @polymerBehavior */
   DygraphBehaviors.GraphBehavior = {
 
     properties: {
@@ -28,18 +28,29 @@
       },
 
       /**
-       * The range displayed at the first loading.
+       * Enables/disables the animation when the roll period is changed.
+       *
+       * @type {Boolean}
+       * @default true
+       */
+      animated: {
+        type: Boolean,
+        value: true,
+        notify: true
+      },
+
+      /**
+       * Desired date window.
        *
        * @type {Array}
+       * @default undefined
        */
-      _originalRange: {
-        type: Array,
-        readOnly: true
+      _desiredRange: {
+        type: Array
       }
     },
 
     observers: [
-      '_setOriginalRange(data)',
       '_updateDateWindow(rollPeriod)'
     ],
 
@@ -60,22 +71,7 @@
      * Resets the date window with the original range.
      */
     resetDateWindow: function() {
-      this.graph.updateOptions({dateWindow: this._originalRange});
-    },
-
-    /**
-     * Sets the original range with the data horizon.
-     *
-     * @param  {Array} data consumed by the graph
-     */
-    _setOriginalRange: function(data) {
-      if (data && data.length) {
-        // Start at the index 1 because the first row is labels.
-        var start = data[1][0];
-        var end = data[data.length - 1][0];
-        this._originalRange = (start && end) ?
-          [start.valueOf(), end.valueOf()] : [];
-      }
+      this._zoom(this.graph.xAxisExtremes());
     },
 
     /**
@@ -86,8 +82,39 @@
      */
     _updateDateWindow: function(rollPeriod) {
       var w = this.graph.xAxisRange();
-      var range = [w[0], w[0] + Number(rollPeriod)];
-      this.graph.updateOptions({dateWindow: range});
+      this._zoom([w[0], w[0] + Number(rollPeriod)]);
+    },
+
+    /**
+     * Reduces or increases the range displayed till reach the desired range.
+     */
+    _approachRange: function() {
+      // Go halfway there
+      var range = this.graph.xAxisRange();
+      if (Math.abs(this._desiredRange[0] - range[0]) < 10 &&
+          Math.abs(this._desiredRange[1] - range[1]) < 10) {
+        this.graph.updateOptions({dateWindow: this._desiredRange});
+      } else {
+        var newRange = [
+          0.5 * (this._desiredRange[0] + range[0]),
+          0.5 * (this._desiredRange[1] + range[1])
+        ];
+        this.graph.updateOptions({dateWindow: newRange});
+        this._animate();
+      }
+    },
+
+    _animate: function() {
+      this.async(this._approachRange.bind(this), 50);
+    },
+
+    _zoom: function(range) {
+      this._desiredRange = range;
+      if (this.animated) {
+        this._animate();
+      } else {
+        this.graph.updateOptions({dateWindow: this._desiredRange});
+      }
     }
 
   };
